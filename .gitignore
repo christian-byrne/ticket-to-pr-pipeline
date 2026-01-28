@@ -1,0 +1,19 @@
+# Pipeline run artifacts
+runs/
+!runs/.gitkeep
+
+# Temporary files
+*.tmp
+*.log
+.DS_Store
+
+# Environment files
+.env
+.env.local
+
+# Editor directories
+.vscode/
+.idea/
+
+# Node modules (if any scripts use them)
+node_modules/
