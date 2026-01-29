@@ -222,6 +222,23 @@ The "Comfy Tasks" database may have these properties (verify via `notion-search`
 - **Team assignment**: "Frontend Team" for unassigned tickets
 - **Filtering note**: Team filtering in Notion may have quirks - handle gracefully
 
+### Pipeline Owner Details
+
+When assigning tickets, use these identifiers:
+
+| Platform | Identifier |
+|----------|------------|
+| Notion User ID | `175d872b-594c-81d4-ba5a-0002911c5966` |
+| Notion Name | Christian Byrne |
+| Notion Email | cbyrne@comfy.org |
+| Slack User ID | U087MJCDHHC |
+| GitHub Username | christian-byrne |
+
+**To update Assignee**, use the Notion User ID (not name):
+```
+properties: {"Assignee": "175d872b-594c-81d4-ba5a-0002911c5966"}
+```
+
 ### Finding Active Tickets
 
 To list your active tickets:
