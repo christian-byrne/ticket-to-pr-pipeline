@@ -158,11 +158,38 @@ Title: {title}
 Labels: {labels}
 
 Notion updated: Status → "In Review", PR linked
-
-Next: Wait for CI checks. Say "check CI" when ready to verify.
 ```
 
-### 11. Save State
+### 11. Auto-Trigger CI Checker
+
+After PR creation, automatically initiate CI monitoring:
+
+```bash
+# Wait briefly for GitHub to register the PR
+sleep 5
+
+# Check initial CI status
+gh pr checks $(git branch --show-current) --watch --fail-fast &
+CI_PID=$!
+
+# Don't block - just start monitoring
+echo "CI monitoring started. Use 'skill ci-checker' for detailed status."
+```
+
+Prompt user:
+
+```
+CI checks are running. Options:
+1. Wait for CI to complete (I'll monitor)
+2. Continue working while CI runs in background
+3. Skip CI monitoring
+
+Your choice:
+```
+
+If user chooses to wait, invoke ci-checker skill automatically.
+
+### 12. Save State
 
 Update `status.json`:
 ```json
