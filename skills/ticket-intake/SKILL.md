@@ -222,6 +222,23 @@ The "Comfy Tasks" database may have these properties (verify via `notion-search`
 - **Team assignment**: "Frontend Team" for unassigned tickets
 - **Filtering note**: Team filtering in Notion may have quirks - handle gracefully
 
+### Pipeline Owner Details
+
+When assigning tickets, use these identifiers:
+
+| Platform | Identifier |
+|----------|------------|
+| Notion User ID | `175d872b-594c-81d4-ba5a-0002911c5966` |
+| Notion Name | Christian Byrne |
+| Notion Email | cbyrne@comfy.org |
+| Slack User ID | U087MJCDHHC |
+| GitHub Username | christian-byrne |
+
+**To update Assignee**, use the Notion User ID (not name):
+```
+properties: {"Assignee": "175d872b-594c-81d4-ba5a-0002911c5966"}
+```
+
 ### Finding Active Tickets
 
 To list your active tickets:
@@ -235,14 +252,35 @@ Filter by Assignee = current user OR Team = "Frontend Team"
 
 If a Slack link exists:
 
-1. Print the link prominently
-2. Instruct user to manually copy thread content
-3. Thread content can be pasted into research phase
+1. Convert to browser-friendly URL format
+2. Print the link prominently
+3. Instruct user to manually copy thread content
+4. Thread content can be pasted into research phase
+
+### Slack URL Conversion
+
+Notion stores Slack links in `slackMessage://` format:
+```
+slackMessage://comfy-organization.slack.com/CHANNEL_ID/THREAD_TS/MESSAGE_TS
+```
+
+Convert to browser-clickable format:
+```
+https://comfy-organization.slack.com/archives/CHANNEL_ID/pMESSAGE_TS_NO_DOT
+```
+
+**Example:**
+- Input: `slackMessage://comfy-organization.slack.com/C075ANWQ8KS/1766022478.450909/1764772881.854829`
+- Output: `https://comfy-organization.slack.com/archives/C075ANWQ8KS/p1764772881854829`
+
+(Remove the dot from the last timestamp and prefix with `p`)
+
+### Output Format
 
 ```
 📋 **Manual Action Required:**
 Slack MCP not available. Please copy the thread content from:
-[Slack URL]
+https://comfy-organization.slack.com/archives/{CHANNEL_ID}/p{MESSAGE_TS}
 
 Paste into the research phase when prompted.
 ```
