@@ -138,6 +138,16 @@ B) Request specific reviewers
 C) Done for now
 ```
 
+**If updating Notion (Option A):**
+
+⚠️ Follow [Notion Write Safety](/home/cbyrne/repos/ticket-to-pr-pipeline/docs/notion-write-safety.md) rules.
+
+- Validate transition In Review → Done is valid
+- Log to `status.json`:
+```json
+{"field": "Status", "value": "Done", "previousValue": "In Review", "at": "...", "skill": "ci-checker", "success": true}
+```
+
 ### 8. Update State
 
 Update `status.json` if it exists:
