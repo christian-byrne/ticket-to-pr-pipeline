@@ -1,50 +1,57 @@
 ---
 name: slack-context-fetcher
-description: Fetches Slack thread content using MCP or API for ticket context enrichment. Use when tickets reference Slack threads or discussions.
+description: Fetches Slack thread content using a Slack bot for ticket context enrichment. Use when tickets reference Slack threads or discussions.
 ---
 
 # Slack Context Fetcher
 
-Automatically fetches Slack thread content when tickets reference Slack discussions. Enriches ticket context with the full conversation.
+Automatically fetches Slack thread content when tickets reference Slack discussions. Uses a Slack bot with API access.
 
-## MCP Setup Options
+## Bot Setup (One-Time)
 
-### Option 1: Composio Slack MCP (Recommended)
+### Step 1: Create Slack App
 
-Composio provides a working Slack MCP that integrates with Amp:
+1. Go to https://api.slack.com/apps
+2. Click **Create New App** → **From scratch**
+3. Name: `Pipeline Context Bot`
+4. Workspace: Select your workspace
+5. Click **Create App**
+
+### Step 2: Add Bot Permissions
+
+1. In left sidebar, click **OAuth & Permissions**
+2. Scroll to **Scopes** → **Bot Token Scopes**
+3. Add these scopes:
+   - `channels:history` - Read public channel messages
+   - `channels:read` - List public channels
+   - `groups:history` - Read private channel messages
+   - `groups:read` - List private channels
+   - `users:read` - Get user display names
+
+### Step 3: Install to Workspace
+
+1. Scroll up to **OAuth Tokens for Your Workspace**
+2. Click **Install to Workspace**
+3. Review permissions and click **Allow**
+4. Copy the **Bot User OAuth Token** (starts with `xoxb-`)
+
+### Step 4: Store Token
 
 ```bash
-# Install via Composio
-amp mcp add slack https://mcp.composio.dev/slack
+# Add to your shell profile (~/.bashrc, ~/.zshrc, etc.)
+export SLACK_BOT_TOKEN="xoxb-your-token-here"
 
-# Authenticate
-amp mcp oauth login slack --server-url https://mcp.composio.dev/slack
+# Or store in a secure location
+echo "xoxb-your-token-here" > ~/.slack-bot-token
+chmod 600 ~/.slack-bot-token
 ```
 
-After authentication, the following tools become available:
-- `slack_get_channel_history` - Fetch messages from a channel
-- `slack_get_thread_replies` - Fetch all replies in a thread
-- `slack_search_messages` - Search for messages by keyword
-- `slack_get_user_info` - Get user profile information
+### Step 5: Add Bot to Channels
 
-### Option 2: Direct Slack API
-
-If MCP is unavailable, use the Slack API directly with a bot token:
-
-```bash
-# Set token (get from api.slack.com/apps)
-export SLACK_BOT_TOKEN="xoxb-..."
-
-# Fetch thread replies
-curl -H "Authorization: Bearer $SLACK_BOT_TOKEN" \
-  "https://slack.com/api/conversations.replies?channel=C0123456789&ts=1234567890.123456"
-```
-
-Required bot scopes:
-- `channels:history` - Read public channel messages
-- `channels:read` - List channels
-- `groups:history` - Read private channel messages (if needed)
-- `groups:read` - List private channels
+For each channel you want to read:
+1. Open the channel in Slack
+2. Click channel name → **Integrations** → **Add apps**
+3. Add `Pipeline Context Bot`
 
 ## Workflow
 
@@ -59,20 +66,16 @@ Example: https://comfy-org.slack.com/archives/C07ABCD1234/p1234567890123456
 
 Extract:
 - `channel_id`: C07ABCD1234
-- `thread_ts`: 1234567890.123456 (convert p{ts} → {ts} with decimal)
+- `thread_ts`: 1234567890.123456 (convert `p{ts}` → insert decimal before last 6 digits)
 
 ### 2. Fetch Thread Content
 
-**With MCP:**
-```
-Use slack_get_thread_replies tool with:
-- channel: {channel_id}
-- thread_ts: {thread_ts}
-```
-
-**With API:**
 ```bash
-curl -s -H "Authorization: Bearer $SLACK_BOT_TOKEN" \
+CHANNEL="C07ABCD1234"
+THREAD_TS="1234567890.123456"
+TOKEN="${SLACK_BOT_TOKEN:-$(cat ~/.slack-bot-token)}"
+
+curl -s -H "Authorization: Bearer $TOKEN" \
   "https://slack.com/api/conversations.replies?channel=$CHANNEL&ts=$THREAD_TS" | \
   jq '.messages[] | {user: .user, text: .text, ts: .ts}'
 ```
@@ -82,12 +85,11 @@ curl -s -H "Authorization: Bearer $SLACK_BOT_TOKEN" \
 Map user IDs to display names:
 
 ```bash
-# With MCP: Use slack_get_user_info for each unique user ID
+USER_ID="U0123456789"
 
-# With API:
-curl -s -H "Authorization: Bearer $SLACK_BOT_TOKEN" \
+curl -s -H "Authorization: Bearer $TOKEN" \
   "https://slack.com/api/users.info?user=$USER_ID" | \
-  jq '.user.real_name'
+  jq -r '.user.real_name'
 ```
 
 ### 4. Format for Context
@@ -132,39 +134,30 @@ jq '.slackThreads += [{"url": "...", "fetched": "...", "messages": N}]' \
 
 ## Integration with ticket-intake
 
-Modify ticket-intake to automatically detect and fetch Slack content:
+During ticket-intake, after parsing Notion:
 
-```markdown
-### In ticket-intake workflow, after step 3:
-
-3.5. Check for Slack References
-
-If ticket description contains Slack URLs:
-1. Parse each URL for channel/thread info
-2. Fetch thread content using slack-context-fetcher
-3. Attach slack-context.md to research context
-4. Note in status.json: "slackContextFetched": true
-```
+1. Check if ticket description contains Slack URLs
+2. For each Slack URL:
+   - Parse channel ID and thread timestamp
+   - Fetch thread content
+   - Save to slack-context.md
+3. Include slack-context.md in research context
 
 ## Handling Private Channels
 
-If the bot doesn't have access:
+If bot doesn't have access:
 
-```markdown
-⚠️ Slack thread in private channel: {channel_name}
+```
+⚠️ Cannot access Slack thread: {url}
+
+The bot is not in this channel.
 
 Options:
-1. Add bot to channel (ask admin)
+1. Add bot to channel (you or admin)
 2. Copy thread content manually
-3. Skip slack context (proceed without)
+3. Skip slack context
 
 Your choice:
-```
-
-Log skipped threads:
-```bash
-jq '.skippedSlackThreads += [{"url": "...", "reason": "private_channel"}]' \
-  "$RUN_DIR/status.json" > tmp && mv tmp "$RUN_DIR/status.json"
 ```
 
 ## Error Handling
@@ -173,8 +166,48 @@ jq '.skippedSlackThreads += [{"url": "...", "reason": "private_channel"}]' \
 |-------|-------|------------|
 | `channel_not_found` | Invalid channel ID | Verify URL is correct |
 | `thread_not_found` | Thread deleted | Note as unavailable |
-| `not_in_channel` | Bot not added | Request bot access or copy manually |
-| `token_expired` | MCP auth expired | Re-authenticate: `amp mcp oauth login slack` |
+| `not_in_channel` | Bot not added | Add bot to channel |
+| `invalid_auth` | Bad token | Regenerate token at api.slack.com |
+| `missing_scope` | Permissions missing | Add required scopes |
+
+## Helper Script
+
+Save as `scripts/fetch-slack-thread.sh`:
+
+```bash
+#!/bin/bash
+set -e
+
+URL="$1"
+TOKEN="${SLACK_BOT_TOKEN:-$(cat ~/.slack-bot-token 2>/dev/null)}"
+
+if [ -z "$TOKEN" ]; then
+  echo "Error: SLACK_BOT_TOKEN not set" >&2
+  exit 1
+fi
+
+# Parse URL: https://workspace.slack.com/archives/CHANNEL/pTIMESTAMP
+CHANNEL=$(echo "$URL" | sed -n 's|.*/archives/\([^/]*\)/.*|\1|p')
+TS_RAW=$(echo "$URL" | sed -n 's|.*/p\([0-9]*\).*|\1|p')
+THREAD_TS="${TS_RAW:0:10}.${TS_RAW:10}"
+
+# Fetch thread
+RESPONSE=$(curl -s -H "Authorization: Bearer $TOKEN" \
+  "https://slack.com/api/conversations.replies?channel=$CHANNEL&ts=$THREAD_TS")
+
+if [ "$(echo "$RESPONSE" | jq -r '.ok')" != "true" ]; then
+  echo "Error: $(echo "$RESPONSE" | jq -r '.error')" >&2
+  exit 1
+fi
+
+# Output messages
+echo "$RESPONSE" | jq -r '.messages[] | "[\(.ts)] \(.user): \(.text)"'
+```
+
+Usage:
+```bash
+./scripts/fetch-slack-thread.sh "https://comfy-org.slack.com/archives/C07.../p1234..."
+```
 
 ## Output Artifacts
 
@@ -182,30 +215,3 @@ jq '.skippedSlackThreads += [{"url": "...", "reason": "private_channel"}]' \
 |------|----------|-------------|
 | slack-context.md | `runs/{ticket-id}/slack-context.md` | Formatted thread content |
 | ticket.json | `runs/{ticket-id}/ticket.json` | Updated with slack references |
-
-## Usage
-
-Standalone:
-```
-/skill slack-context-fetcher
-[paste Slack thread URL]
-```
-
-Or automatically triggered during ticket-intake when Slack URLs detected.
-
-## MCP Tool Reference
-
-If using Composio Slack MCP, filter to these tools only:
-
-```json
-{
-  "includeTools": [
-    "slack_get_channel_history",
-    "slack_get_thread_replies", 
-    "slack_search_messages",
-    "slack_get_user_info"
-  ]
-}
-```
-
-This keeps token usage minimal while providing full thread-fetching capability.

@@ -1,279 +1,203 @@
 ---
 name: stacked-pr-manager
-description: Manages stacked PRs for large changes. Creates, tracks, and coordinates dependent PR chains. Use when pr-split-advisor recommends stacked approach.
+description: Manages stacked PRs for large changes using Graphite CLI. Creates, tracks, and coordinates dependent PR chains. Use when pr-split-advisor recommends stacked approach.
 ---
 
 # Stacked PR Manager
 
-Manages chains of dependent PRs that build on each other, coordinating merges and rebases.
+Manages chains of dependent PRs using [Graphite CLI](https://graphite.dev/docs/graphite-cli). Graphite handles rebasing, PR creation, and merge coordination.
 
-## When to Use
+## Prerequisites
 
-- pr-split-advisor recommends "Stacked PRs"
-- Change is too large for single PR (500+ LOC)
-- Logical layers that must merge in sequence
-- Want early review of foundational changes
+- Graphite CLI installed: `brew install withgraphite/tap/graphite`
+- Authenticated: `gt auth`
+- pr-split-advisor recommends stacked approach
 
-## Concepts
+## Graphite Basics
 
-### Stack Structure
+Graphite tracks branch dependencies automatically. Key commands:
 
-```
-main
-  └── PR #1: Base types and interfaces
-        └── PR #2: Core implementation
-              └── PR #3: UI integration
-                    └── PR #4: Tests
-```
-
-Each PR targets the previous PR's branch, not main.
-
-### Naming Convention
-
-```
-feature/ticket-id/01-types
-feature/ticket-id/02-core
-feature/ticket-id/03-ui
-feature/ticket-id/04-tests
-```
+| Command | Purpose |
+|---------|---------|
+| `gt create -m "title"` | Create new branch stacked on current |
+| `gt submit` | Create/update PRs for entire stack |
+| `gt sync` | Rebase stack onto latest trunk |
+| `gt log` | View stack structure |
+| `gt down` / `gt up` | Navigate stack |
 
 ## Workflow
 
 ### 1. Initialize Stack
 
-From approved plan with multiple PRs:
+Start from main:
 
 ```bash
-TICKET_ID="ABC-123"
-STACK_NAME="feature/$TICKET_ID"
+gt sync  # Ensure up to date with main
 
-# Create base branch from main
-git checkout main
-git pull origin main
-git checkout -b "$STACK_NAME/01-types"
-```
-
-Create stack manifest:
-
-```bash
-cat > "$RUN_DIR/stack.json" << 'EOF'
-{
-  "ticketId": "ABC-123",
-  "baseBranch": "main",
-  "branches": [
-    {"order": 1, "branch": "feature/ABC-123/01-types", "title": "Add type definitions", "status": "pending"},
-    {"order": 2, "branch": "feature/ABC-123/02-core", "title": "Implement core logic", "status": "pending"},
-    {"order": 3, "branch": "feature/ABC-123/03-ui", "title": "Add UI components", "status": "pending"},
-    {"order": 4, "branch": "feature/ABC-123/04-tests", "title": "Add test coverage", "status": "pending"}
-  ],
-  "currentBranch": 1
-}
-EOF
+# Create first branch in stack
+gt create -m "feat: add type definitions [1/N]"
 ```
 
 ### 2. Implement Each Layer
 
-For each branch in sequence:
+Work on current branch, then stack next:
 
 ```bash
-# Work on current branch
-git checkout "$STACK_NAME/01-types"
-
-# ... implement changes ...
-
-# Commit and push
+# ... make changes ...
 git add -A
-git commit -m "feat: add type definitions for feature X"
-git push -u origin "$STACK_NAME/01-types"
+git commit -m "feat: add type definitions"
+
+# Create next branch stacked on this one
+gt create -m "feat: implement core logic [2/N]"
+
+# ... make changes ...
+git add -A
+git commit -m "feat: implement core logic"
+
+# Continue stacking...
+gt create -m "feat: add UI components [3/N]"
 ```
 
-### 3. Create Stacked PRs
-
-Create PRs targeting previous branch:
+### 3. View Stack
 
 ```bash
-# First PR targets main
-gh pr create \
-  --base main \
-  --head "$STACK_NAME/01-types" \
-  --title "feat: add type definitions [1/4]" \
-  --body "Part 1 of 4: Type definitions
-
-## Stack
-- **→ PR #1: Types** (this PR)
-- PR #2: Core implementation
-- PR #3: UI integration  
-- PR #4: Tests
-
-## Changes
-- Added interfaces for...
-"
-
-# Subsequent PRs target previous branch
-gh pr create \
-  --base "$STACK_NAME/01-types" \
-  --head "$STACK_NAME/02-core" \
-  --title "feat: implement core logic [2/4]" \
-  --body "Part 2 of 4: Core implementation
-
-## Stack
-- PR #1: Types ✓
-- **→ PR #2: Core** (this PR)
-- PR #3: UI integration
-- PR #4: Tests
-
-Depends on: #PR_NUMBER_1
-"
+gt log
 ```
 
-### 4. Track Stack State
+Output:
+```
+◉ feat: add UI components [3/N] (current)
+│
+◉ feat: implement core logic [2/N]
+│
+◉ feat: add type definitions [1/N]
+│
+◉ main
+```
 
-Update manifest after each PR:
+### 4. Submit All PRs
+
+Create PRs for entire stack at once:
 
 ```bash
-jq '.branches[0].status = "pr-created" | .branches[0].prNumber = 123' \
-  "$RUN_DIR/stack.json" > tmp && mv tmp "$RUN_DIR/stack.json"
+gt submit --stack
 ```
 
-### 5. Handle Reviews
+Graphite creates PRs with:
+- Correct base branches (each PR targets previous)
+- Stack visualization in PR description
+- Auto-updates when you push changes
 
-When PR #1 gets review feedback:
+### 5. Handle Review Feedback
 
-1. Fix issues on branch 01-types
-2. Push fixes
-3. Rebase all downstream branches:
+If changes needed on an earlier PR:
 
 ```bash
-# After fixing PR #1
-git checkout "$STACK_NAME/02-core"
-git rebase "$STACK_NAME/01-types"
-git push --force-with-lease
+# Navigate to the branch
+gt down  # or gt checkout <branch-name>
 
-git checkout "$STACK_NAME/03-ui"
-git rebase "$STACK_NAME/02-core"
-git push --force-with-lease
+# Make fixes
+git add -A
+git commit --amend  # or new commit
 
-# Continue for all downstream branches
+# Rebase rest of stack
+gt sync --restack
+
+# Update all PRs
+gt submit --stack
 ```
 
-### 6. Merge Sequence
+### 6. Merge Stack
 
-PRs must merge in order:
+Merge from bottom up. Graphite can auto-merge:
 
 ```bash
-# Merge PR #1 (into main)
-gh pr merge PR_1 --squash
-
-# Update PR #2 base to main
-gh pr edit PR_2 --base main
-
-# Merge PR #2
-gh pr merge PR_2 --squash
-
-# Continue...
+gt merge  # Merges current branch when approved
 ```
 
-### 7. Rebase Helper Script
-
-For complex stacks, use rebase cascade:
+Or merge via GitHub, then sync:
 
 ```bash
-#!/bin/bash
-# rebase-stack.sh
-
-STACK_PREFIX="feature/ABC-123"
-BRANCHES=("01-types" "02-core" "03-ui" "04-tests")
-
-for i in "${!BRANCHES[@]}"; do
-  branch="$STACK_PREFIX/${BRANCHES[$i]}"
-  
-  if [ $i -eq 0 ]; then
-    base="main"
-  else
-    base="$STACK_PREFIX/${BRANCHES[$((i-1))]}"
-  fi
-  
-  echo "Rebasing $branch onto $base"
-  git checkout "$branch"
-  git rebase "$base"
-  git push --force-with-lease
-done
+gt sync  # Updates stack after merges
 ```
 
-## Stack Status Dashboard
-
-```markdown
-# Stack Status: ABC-123
-
-| # | Branch | PR | Status | CI |
-|---|--------|-----|--------|-----|
-| 1 | 01-types | #123 | ✅ Merged | ✅ |
-| 2 | 02-core | #124 | 🔄 In Review | ✅ |
-| 3 | 03-ui | #125 | ⏳ Waiting | ⏳ |
-| 4 | 04-tests | #126 | ⏳ Waiting | ⏳ |
-
-**Current:** PR #124 awaiting approval
-**Blocked:** PRs #125, #126 waiting on #124
-```
-
-## Conflict Resolution
-
-When rebasing causes conflicts:
-
-```markdown
-⚠️ Conflict in stack rebase
-
-Branch: feature/ABC-123/03-ui
-Conflicting files:
-- src/components/Feature.vue
-
-Options:
-1. Resolve conflicts interactively
-2. Show conflict details
-3. Abort rebase and investigate
-
-Your choice:
-```
-
-## Best Practices
-
-1. **Keep PRs small** - Each should be 100-300 LOC
-2. **Independent where possible** - Minimize cross-PR dependencies
-3. **Clear boundaries** - Each PR should have a clear purpose
-4. **Test each layer** - Don't defer all tests to final PR
-5. **Communicate in PR** - Reference full stack in description
-
-## Stack Templates
+## Stack Patterns
 
 ### Feature Stack (typical)
-1. Types/interfaces
-2. Core logic
-3. UI components
-4. Tests
+```bash
+gt create -m "feat: add types [1/4]"
+# ... implement types ...
+gt create -m "feat: add core logic [2/4]"
+# ... implement logic ...
+gt create -m "feat: add components [3/4]"
+# ... implement UI ...
+gt create -m "feat: add tests [4/4]"
+# ... add tests ...
+gt submit --stack
+```
 
 ### Refactor Stack
-1. Add deprecation warnings
-2. Introduce new implementation
-3. Migrate usages
-4. Remove deprecated code
+```bash
+gt create -m "refactor: add deprecation warnings [1/3]"
+gt create -m "refactor: introduce new implementation [2/3]"
+gt create -m "refactor: migrate usages [3/3]"
+gt submit --stack
+```
 
-### Migration Stack
-1. Add new schema
-2. Dual-write to old and new
-3. Backfill data
-4. Remove old schema
+## Tracking in Pipeline
+
+Update status.json with stack info:
+
+```bash
+jq '.stack = {
+  "tool": "graphite",
+  "branches": ["branch-1", "branch-2", "branch-3"],
+  "submittedAt": now
+}' "$RUN_DIR/status.json" > tmp && mv tmp "$RUN_DIR/status.json"
+```
+
+## Common Issues
+
+### Merge Conflicts During Restack
+
+```bash
+gt sync --restack
+# If conflicts occur, resolve them:
+# 1. Fix conflicts in files
+# 2. git add <files>
+# 3. gt continue
+```
+
+### Need to Insert Branch Mid-Stack
+
+```bash
+gt down  # Go to where you want to insert
+gt create -m "feat: new middle branch"
+gt sync --restack  # Rebase branches above
+```
+
+### Abandon a Branch in Stack
+
+```bash
+gt checkout <branch-to-remove>
+gt delete --force
+gt sync --restack
+```
 
 ## Integration with Pipeline
 
-**Before:** pr-split-advisor (recommends stacked approach)
-**After:** pr-creator (for each PR in stack)
+**Before:** pr-split-advisor (recommends stacked)
+**After:** pr-creator (for each PR via gt submit)
 
-Status transitions per PR:
-- `pending` → `implementing` → `pr-created` → `in-review` → `merged`
+Use Graphite's dashboard at https://app.graphite.dev for stack visualization.
 
 ## Output Artifacts
 
 | File | Location | Description |
 |------|----------|-------------|
-| stack.json | `runs/{ticket-id}/stack.json` | Stack manifest and state |
-| status.json | `runs/{ticket-id}/status.json` | Overall pipeline status |
+| status.json | `runs/{ticket-id}/status.json` | Stack tracking info |
+
+## Resources
+
+- [Graphite CLI Docs](https://graphite.dev/docs/graphite-cli)
+- [Graphite Stacking Guide](https://graphite.dev/docs/stacking-guide)
