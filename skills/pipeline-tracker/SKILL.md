@@ -14,6 +14,7 @@ Parse the user's request to determine which command to run:
 - `sync` - Update Notion with current status
 - `resume {ticket-id}` - Resume a paused run
 - `archive` - Clean up completed runs
+- `check-merged` - Check for merged PRs and update Notion to Done
 
 ## Configuration
 
@@ -223,6 +224,53 @@ If no runs exist:
 No active pipeline runs.
 
 To start a new run, use the ticket-picker skill.
+```
+
+## Command: check-merged
+
+Check for merged PRs and update Notion status to Done. This handles the common case where you close the agent before PR merge.
+
+1. **Find runs in review state:**
+   ```bash
+   find runs/ -name "status.json" -exec jq -c \
+     'select(.status | test("pr-created|in-review|ci-passed")) | 
+      {id: .ticketId, prNumber: .prNumber}' {} \; 2>/dev/null
+   ```
+
+2. **Check each PR's merge status:**
+   ```bash
+   gh pr view $PR_NUMBER --json state,mergedAt
+   ```
+
+3. **For merged PRs, update Notion:**
+   - Status: In Review → Done
+   - Log write to status.json
+
+4. **Update local status:**
+   ```bash
+   jq '.status = "done" | .completedAt = now' status.json
+   ```
+
+5. **Report:**
+   ```
+   Checked {X} open PRs:
+   - ABC-123: PR #456 merged ✅ → Notion updated to Done
+   - DEF-456: PR #789 still open
+   ```
+
+For detailed merge watching (including closed PR handling), use `/skill pr-merge-watcher`.
+
+## Auto-Check on Status
+
+When running `status` command, automatically check for merged PRs:
+
+```markdown
+# Pipeline Dashboard
+
+⚡ Quick check: Found 1 merged PR not yet marked Done
+   → ABC-123: PR #456 merged 2 days ago
+
+Update Notion now? (Y/n)
 ```
 
 ## Notion Properties
