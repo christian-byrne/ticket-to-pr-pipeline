@@ -76,9 +76,11 @@ NOTION_DATABASE=Comfy Tasks
 
 Update Notion with current pipeline status.
 
+**⚠️ Follow [Notion Write Safety](/home/cbyrne/repos/ticket-to-pr-pipeline/docs/notion-write-safety.md) rules for all writes.**
+
 1. **For each active run:**
-   - Read `ticket.json` for Notion page ID
-   - Read `status.json` for current phase
+   - Read `ticket.json` for Notion page ID (required - skip if missing)
+   - Read `status.json` for current phase and previous Notion status
 
 2. **Map phase to Notion Status:**
    | Pipeline Phase | Notion Status |
@@ -88,16 +90,27 @@ Update Notion with current pipeline status.
    | done | Done |
    | blocked | (keep current) |
 
-3. **Update Notion using MCP:**
-   - Update Status property
-   - Update GitHub PR property if prUrl exists
-   - Ensure Assignee is set
+3. **Validate before each write:**
+   - Page ID exists in ticket.json
+   - Status transition is valid (see safety doc)
+   - PR URL matches `^https://github\.com/[^/]+/[^/]+/pull/\d+$`
 
-4. **Report results:**
+4. **Update Notion using MCP:**
+   - Update Status property (only if transition valid)
+   - Update GitHub PR property if prUrl exists
+   - Ensure Assignee is set (assign only, never unassign)
+
+5. **Log each write** to `status.json`:
+   ```json
+   {"field": "Status", "value": "In Review", "previousValue": "In Progress", "at": "...", "skill": "pipeline-tracker", "success": true}
+   ```
+
+6. **Report results:**
    ```
    Synced {X} runs to Notion:
-   - {Ticket 1}: Status → In Progress
-   - {Ticket 2}: Status → In Review, PR → #123
+   - {Ticket 1}: Status → In Progress ✅
+   - {Ticket 2}: Status → In Review, PR → #123 ✅
+   - {Ticket 3}: Skipped (invalid transition Done → In Progress)
    ```
 
 ## Command: resume {ticket-id}

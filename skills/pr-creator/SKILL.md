@@ -124,9 +124,28 @@ gh pr create \
 
 ### 9. Update Notion
 
+**⚠️ Follow [Notion Write Safety](/home/cbyrne/repos/ticket-to-pr-pipeline/docs/notion-write-safety.md) rules.**
+
 Using Notion MCP:
 - Add PR URL to ticket's "GitHub PR" property
-- Update Status → "In Review"
+- Update Status → "In Review" (only valid from "In Progress")
+
+**Pre-write validation:**
+- Verify page ID exists in ticket.json
+- Validate PR URL matches `^https://github\.com/[^/]+/[^/]+/pull/\d+$`
+- Confirm transition In Progress → In Review is valid
+
+**Log each write** to `status.json`:
+```json
+{
+  "notionWrites": [
+    {"field": "GitHub PR", "value": "{url}", "previousValue": null, "at": "...", "skill": "pr-creator", "success": true},
+    {"field": "Status", "value": "In Review", "previousValue": "In Progress", "at": "...", "skill": "pr-creator", "success": true}
+  ]
+}
+```
+
+If updates fail, log with `success: false` and continue.
 
 ### 10. Output
 

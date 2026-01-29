@@ -114,12 +114,33 @@ Create directory structure at:
 
 ### Step 5: Update Notion Ticket
 
+**⚠️ Follow [Notion Write Safety](/home/cbyrne/repos/ticket-to-pr-pipeline/docs/notion-write-safety.md) rules.**
+
 Use `Notion:notion-update-page` to update the ticket:
 
-1. **Status**: Set to "In Progress"
+1. **Status**: Set to "In Progress" (only valid from "Not Started")
 2. **Assignee**: Assign to current user (if not already assigned)
 
-If update fails, note the error but continue - this is not blocking.
+**Pre-write validation:**
+- Verify page ID exists in ticket.json
+- Confirm transition Not Started → In Progress is valid
+- Prepare log entry for status.json
+
+**Log the write** to `status.json`:
+```json
+{
+  "notionWrites": [{
+    "field": "Status",
+    "value": "In Progress",
+    "previousValue": "Not Started",
+    "at": "2024-01-15T10:30:00Z",
+    "skill": "ticket-intake",
+    "success": true
+  }]
+}
+```
+
+If update fails, log with `success: false` and continue - this is not blocking.
 
 ### Step 6: Output Summary
 
