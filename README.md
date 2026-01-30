@@ -98,16 +98,22 @@ The pipeline executes skills sequentially with human checkpoints (🔵) between 
 | Step | Skill | Purpose | Human Checkpoint |
 |------|-------|---------|------------------|
 | 1 | `ticket-intake` | Parse Notion URL, extract ticket data | Review ticket summary |
-| 2 | `research-orchestrator` | Dispatch parallel research subagents | Review research report |
-| 3 | `plan-generator` | Create high-level implementation plan | Approve plan |
-| 4 | `pr-split-advisor` | Recommend vertical slices or stacked PRs | Choose split strategy |
-| 5 | `tdd-assessor` | Evaluate TDD benefit, setup test-first | Approve TDD approach |
-| 6 | `quality-gates-runner` | Run lint, typecheck, unit tests | — |
-| 7 | `review-orchestrator` | Dispatch CodeRabbit + agent reviewers | Triage review comments |
-| 8 | `final-qa-launcher` | Start dev server, print QA checklist | Manual verification |
-| 9 | `pr-creator` | Generate description, create PR | — |
-| 10 | `ci-checker` | Monitor CI, guide fixes | — |
+| 2 | `slack-context-fetcher` | Fetch Slack thread content for context | — |
+| 3 | `research-orchestrator` | Dispatch parallel research subagents | Review research report |
+| 4 | `plan-generator` | Create high-level implementation plan | Approve plan |
+| 5 | `pr-split-advisor` | Recommend vertical slices or stacked PRs | Choose split strategy |
+| 6 | `tdd-assessor` | Evaluate TDD benefit, setup test-first | Approve TDD approach |
+| 7 | `quality-gates-runner` | Run lint, typecheck, unit tests | — |
+| 8 | `coderabbit-reviewer` | AI-powered code review via CodeRabbit | — |
+| 9 | `review-orchestrator` | Dispatch CodeRabbit + agent reviewers | Triage review comments |
+| 10 | `webapp-testing` | Browser automation for testing | — |
+| 11 | `final-qa-launcher` | Start dev server, print QA checklist | Manual verification |
+| 12 | `pr-creator` | Generate description, create PR | — |
+| 13 | `stacked-pr-manager` | Manage stacked PRs via Graphite | — |
+| 14 | `ci-checker` | Monitor CI, guide fixes | — |
 | — | `pipeline-tracker` | Sync status to Notion (runs throughout) | — |
+| — | `pr-merge-watcher` | Check merged PRs, update Notion to Done | — |
+| — | `metrics-dashboard` | Track pipeline velocity and stats | — |
 
 ### Using `pipeline-tracker`
 
@@ -154,41 +160,30 @@ Load pipeline-tracker to check status and resume:
 
 ```
 ticket-to-pr-pipeline/
-├── skills/                     # Agent skills for each pipeline phase
+├── skills/                     # 17 agent skills
 │   ├── ticket-intake/          # Parse Notion tickets
+│   ├── slack-context-fetcher/  # Fetch Slack threads
 │   ├── research-orchestrator/  # Dispatch research subagents
 │   ├── plan-generator/         # Create implementation plans
 │   ├── pr-split-advisor/       # Recommend PR splitting
 │   ├── tdd-assessor/           # Evaluate TDD fit
 │   ├── quality-gates-runner/   # Run lint/type/test
-│   ├── review-orchestrator/    # Dispatch code reviewers
-│   ├── final-qa-launcher/      # Start dev server + QA
+│   ├── coderabbit-reviewer/    # AI code review
+│   ├── review-orchestrator/    # Dispatch reviewers
+│   ├── webapp-testing/         # Visual verification
+│   ├── final-qa-launcher/      # Dev server + QA
 │   ├── pr-creator/             # Create GitHub PRs
+│   ├── stacked-pr-manager/     # Graphite stacked PRs
 │   ├── ci-checker/             # Check CI status
-│   └── pipeline-tracker/       # Status sync utility
+│   ├── pipeline-tracker/       # Status sync
+│   ├── pr-merge-watcher/       # Async completion
+│   └── metrics-dashboard/      # Pipeline stats
 │
-├── tasks/                      # Build tasks for each skill
-│   ├── 01-build-ticket-intake-skill.md
-│   ├── 02-build-research-orchestrator-skill.md
-│   └── ...
-│
-├── prompts/                    # Subagent prompt templates
-│   ├── research/               # Research subagent prompts
-│   └── review/                 # Review subagent prompts
-│
-├── runs/                       # Pipeline run artifacts (gitignored)
-│   └── {ticket-id}/
-│       ├── status.json         # Current status
-│       ├── research-report.md  # Research output
-│       ├── plan.md             # Implementation plan
-│       ├── review-comments.md  # Review output
-│       └── qa-checklist.md     # QA items
-│
+├── prompts/research/           # Research subagent prompts
 ├── scripts/                    # Helper scripts
-├── docs/                       # Pipeline documentation
-│   ├── implementation-plan.md
-│   └── pipeline-diagram.md
-└── README.md
+├── docs/                       # Documentation
+├── runs/                       # Run artifacts (gitignored)
+└── setup.sh                    # Install skills
 ```
 
 ---
@@ -231,10 +226,3 @@ The `pipeline-tracker` skill syncs to a Notion database with these properties:
 | Current Step | Text | Active skill name |
 | Blockers | Text | Any blocking issues |
 
----
-
-## Contributing
-
-See [tasks/README.md](tasks/README.md) for how to build new skills.
-
-All planning documents go through PR review before merging.
