@@ -63,6 +63,7 @@ git diff {{COMMIT_HASH}}^..{{COMMIT_HASH}}
 ## Git History Research Report
 
 ### Summary
+
 - X commits found touching affected files in last 90 days
 - Primary authors: [list]
 - Key patterns observed: [list]
@@ -70,6 +71,7 @@ git diff {{COMMIT_HASH}}^..{{COMMIT_HASH}}
 ### Relevant Commits
 
 #### Commit: {{HASH}} - {{TITLE}}
+
 - **Author:** {{AUTHOR}}
 - **Date:** {{DATE}}
 - **Files:** {{FILES}}
@@ -77,16 +79,19 @@ git diff {{COMMIT_HASH}}^..{{COMMIT_HASH}}
 - **Pattern/Lesson:** What we can learn from this change
 
 ### File Ownership
-| File | Primary Author | Recent Activity |
-|------|----------------|-----------------|
-| path/to/file.ts | @author | 5 commits in 90 days |
+
+| File            | Primary Author | Recent Activity      |
+| --------------- | -------------- | -------------------- |
+| path/to/file.ts | @author        | 5 commits in 90 days |
 
 ### Observations
+
 - Any patterns in how similar features were implemented
 - Testing approaches used
 - Review feedback from commit messages
 
 ### Recommendations
+
 - Based on history, suggest approach for current ticket
 ```
 

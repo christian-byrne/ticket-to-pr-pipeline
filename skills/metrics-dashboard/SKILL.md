@@ -33,6 +33,7 @@ done > /tmp/runs-data.jsonl
 ### 2. Calculate Metrics
 
 **Cycle Time:**
+
 ```bash
 jq -s '
   map(select(.completed != null)) |
@@ -46,6 +47,7 @@ jq -s '
 ```
 
 **Success Rate:**
+
 ```bash
 jq -s '{
   total: length,
@@ -56,6 +58,7 @@ jq -s '{
 ```
 
 **Phase Duration:**
+
 ```bash
 jq -s '
   map(.phases) | flatten | group_by(.phase) |
@@ -72,11 +75,11 @@ jq -s '
 
 ## Summary
 
-| Metric | Value | Trend |
-|--------|-------|-------|
-| Tickets Completed | 12 | ↑ +3 |
-| Success Rate | 83% | ↑ +5% |
-| Avg Cycle Time | 2.5 hrs | ↓ -0.5 hrs |
+| Metric            | Value   | Trend      |
+| ----------------- | ------- | ---------- |
+| Tickets Completed | 12      | ↑ +3       |
+| Success Rate      | 83%     | ↑ +5%      |
+| Avg Cycle Time    | 2.5 hrs | ↓ -0.5 hrs |
 
 ## Cycle Time Breakdown
 
@@ -85,19 +88,19 @@ Implement █████████████ 25 min | Quality ████ 
 
 ## Success by Type
 
-| Type | Count | Success | Avg Time |
-|------|-------|---------|----------|
-| Bug Fix | 5 | 100% | 1.2 hrs |
-| Feature | 4 | 75% | 3.5 hrs |
-| Refactor | 3 | 67% | 2.8 hrs |
+| Type     | Count | Success | Avg Time |
+| -------- | ----- | ------- | -------- |
+| Bug Fix  | 5     | 100%    | 1.2 hrs  |
+| Feature  | 4     | 75%     | 3.5 hrs  |
+| Refactor | 3     | 67%     | 2.8 hrs  |
 
 ## Failure Analysis
 
-| Failure Point | Count | % |
-|---------------|-------|---|
-| Quality gates | 2 | 40% |
-| CI failures | 1 | 20% |
-| Review rejection | 1 | 20% |
+| Failure Point    | Count | %   |
+| ---------------- | ----- | --- |
+| Quality gates    | 2     | 40% |
+| CI failures      | 1     | 20% |
+| Review rejection | 1     | 20% |
 
 ## Recommendations
 
@@ -137,8 +140,8 @@ Prompt user before syncing metrics to Notion.
 
 ## Output Artifacts
 
-| File | Location | Description |
-|------|----------|-------------|
-| metrics-{date}.md | `runs/` | Point-in-time dashboard |
-| metrics-summary.json | `runs/` | Latest metrics JSON |
-| metrics-history.jsonl | `runs/` | Historical trends |
+| File                  | Location | Description             |
+| --------------------- | -------- | ----------------------- |
+| metrics-{date}.md     | `runs/`  | Point-in-time dashboard |
+| metrics-summary.json  | `runs/`  | Latest metrics JSON     |
+| metrics-history.jsonl | `runs/`  | Historical trends       |

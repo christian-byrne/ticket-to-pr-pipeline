@@ -10,21 +10,21 @@ A waterfall pipeline with human checkpoints to transform a Notion ticket into an
 
 ### 1.1 Core Pipeline Skills
 
-| Skill | Purpose | Dependencies |
-|-------|---------|--------------|
-| `ticket-intake` | Parse Notion URL, extract ticket data, initialize pipeline | Notion MCP |
-| `research-orchestrator` | Generate research plan, dispatch subagents, compile report | dispatching-parallel-agents |
-| `plan-generator` | Create high-level plan from research, iterate with human | writing-plans |
-| `plan-to-tasks` | Convert plan to implementation tasks | writing-plans |
-| `pr-split-advisor` | Assess and recommend PR splitting strategy | splitting-prs, worktree-utils |
-| `tdd-assessor` | Evaluate if TDD is beneficial, setup test-first approach | test-driven-development |
-| `quality-gates-runner` | Run all linting/type/test checks via subagents | subagent-driven-development |
-| `review-orchestrator` | Dispatch review subagents, compile & triage comments | requesting-code-review |
-| `visual-verifier` | Optional Playwright/Chrome DevTools verification | webapp-testing |
-| `final-qa-launcher` | Start dev server, print QA checklist | tmux |
-| `pr-creator` | Generate description, labels, submit PR | (gh CLI) |
-| `ci-checker` | Check CI status, guide fixes | (gh CLI) |
-| `pipeline-tracker` | Sync status to Notion dashboard | Notion MCP |
+| Skill                   | Purpose                                                    | Dependencies                  |
+| ----------------------- | ---------------------------------------------------------- | ----------------------------- |
+| `ticket-intake`         | Parse Notion URL, extract ticket data, initialize pipeline | Notion MCP                    |
+| `research-orchestrator` | Generate research plan, dispatch subagents, compile report | dispatching-parallel-agents   |
+| `plan-generator`        | Create high-level plan from research, iterate with human   | writing-plans                 |
+| `plan-to-tasks`         | Convert plan to implementation tasks                       | writing-plans                 |
+| `pr-split-advisor`      | Assess and recommend PR splitting strategy                 | splitting-prs, worktree-utils |
+| `tdd-assessor`          | Evaluate if TDD is beneficial, setup test-first approach   | test-driven-development       |
+| `quality-gates-runner`  | Run all linting/type/test checks via subagents             | subagent-driven-development   |
+| `review-orchestrator`   | Dispatch review subagents, compile & triage comments       | requesting-code-review        |
+| `visual-verifier`       | Optional Playwright/Chrome DevTools verification           | webapp-testing                |
+| `final-qa-launcher`     | Start dev server, print QA checklist                       | tmux                          |
+| `pr-creator`            | Generate description, labels, submit PR                    | (gh CLI)                      |
+| `ci-checker`            | Check CI status, guide fixes                               | (gh CLI)                      |
+| `pipeline-tracker`      | Sync status to Notion dashboard                            | Notion MCP                    |
 
 ### 1.2 Research Subagent Prompts
 
@@ -55,13 +55,13 @@ Each research area needs a specialized prompt template:
 
 ### 2.1 Required MCPs
 
-| MCP | Purpose | Status |
-|-----|---------|--------|
-| **Notion MCP** | Read tickets, update status, add PR links | Needs setup |
-| **Slack MCP** | Read linked Slack threads | Needs research |
-| **Chrome DevTools MCP** | Visual verification | Available |
-| **Playwright MCP** | E2E testing | Needs research |
-| **Context7 / DeepWiki** | ComfyUI documentation | Available |
+| MCP                     | Purpose                                   | Status         |
+| ----------------------- | ----------------------------------------- | -------------- |
+| **Notion MCP**          | Read tickets, update status, add PR links | Needs setup    |
+| **Slack MCP**           | Read linked Slack threads                 | Needs research |
+| **Chrome DevTools MCP** | Visual verification                       | Available      |
+| **Playwright MCP**      | E2E testing                               | Needs research |
+| **Context7 / DeepWiki** | ComfyUI documentation                     | Available      |
 
 ### 2.2 Notion MCP Setup
 
@@ -71,7 +71,6 @@ Each research area needs a specialized prompt template:
 - Query databases (find related tasks)
 - Update page properties (Status, PR Link, Assignee)
 - List database entries for dashboard
-
 # API Key location: TBD (env var or secrets manager)
 ```
 
@@ -126,16 +125,16 @@ gh pr create \
 
 ### 4.1 Context Snippets (Pre-compiled)
 
-| Source | When to Use | Snippet/Instruction |
-|--------|-------------|---------------------|
-| **ComfyUI docs** | Node behavior, API | Use context7 or deepwiki MCP |
-| **embedded-docs repo** | Individual node docs | Read from `comfyui_embedded_docs/` |
-| **Vue 3 docs** | Component patterns | `https://vuejs.org/api/` |
-| **Tailwind docs** | Styling | `https://tailwindcss.com/docs/` |
-| **VueUse** | Composables | `https://vueuse.org/` |
-| **Reka UI** | UI components | `https://reka-ui.com/` |
-| **Frontend AGENTS.md** | Coding standards | Local file |
-| **Testing guides** | Test patterns | `ComfyUI_frontend/docs/testing/*.md` |
+| Source                 | When to Use          | Snippet/Instruction                  |
+| ---------------------- | -------------------- | ------------------------------------ |
+| **ComfyUI docs**       | Node behavior, API   | Use context7 or deepwiki MCP         |
+| **embedded-docs repo** | Individual node docs | Read from `comfyui_embedded_docs/`   |
+| **Vue 3 docs**         | Component patterns   | `https://vuejs.org/api/`             |
+| **Tailwind docs**      | Styling              | `https://tailwindcss.com/docs/`      |
+| **VueUse**             | Composables          | `https://vueuse.org/`                |
+| **Reka UI**            | UI components        | `https://reka-ui.com/`               |
+| **Frontend AGENTS.md** | Coding standards     | Local file                           |
+| **Testing guides**     | Test patterns        | `ComfyUI_frontend/docs/testing/*.md` |
 
 ### 4.2 Research Targets Checklist
 
@@ -143,6 +142,7 @@ For each ticket, consider researching:
 
 ```markdown
 ## Mandatory
+
 - [ ] Full ticket description and acceptance criteria
 - [ ] Linked Slack thread (if exists)
 - [ ] Affected files (identify from ticket description)
@@ -151,6 +151,7 @@ For each ticket, consider researching:
 - [ ] Related closed PRs for patterns
 
 ## Conditional
+
 - [ ] Notion related tasks (if linked)
 - [ ] GitHub issues with similar keywords
 - [ ] Author history on affected files
@@ -165,7 +166,7 @@ For each ticket, consider researching:
 ### 5.1 Notion Dashboard Schema
 
 ```yaml
-Database: "Pipeline Tracker"
+Database: 'Pipeline Tracker'
 Properties:
   - Ticket: URL (link to original ticket)
   - Status: Select [Not Started, Research, Planning, Implementation, Review, QA, PR Created, Done, Blocked]
@@ -217,6 +218,7 @@ If Notion integration is slow to setup, use local markdown:
 **Trigger:** User provides Notion ticket URL
 
 **Steps:**
+
 1. Parse Notion URL to extract page ID
 2. Use Notion MCP to fetch page content
 3. Extract: title, description, acceptance criteria, linked Slack, linked tasks
@@ -232,6 +234,7 @@ If Notion integration is slow to setup, use local markdown:
 **Trigger:** After ticket-intake completes
 
 **Steps:**
+
 1. Analyze ticket to determine relevant research areas
 2. Generate research plan (subset of all possible sources)
 3. Create subagent prompts for each area
@@ -242,6 +245,7 @@ If Notion integration is slow to setup, use local markdown:
 8. Present to human for review
 
 **Subagent Dispatch Pattern:**
+
 ```typescript
 // Pseudo-code
 const tasks = [
@@ -250,9 +254,9 @@ const tasks = [
   { name: 'git', prompt: gitPrompt },
   { name: 'prs', prompt: prPrompt },
   { name: 'codebase', prompt: codebasePrompt },
-  { name: 'external', prompt: externalPrompt, skip: !needsExternalResearch }
+  { name: 'external', prompt: externalPrompt, skip: !needsExternalResearch },
 ]
-await Promise.all(tasks.filter(t => !t.skip).map(dispatchSubagent))
+await Promise.all(tasks.filter((t) => !t.skip).map(dispatchSubagent))
 ```
 
 ### 6.3 `plan-generator` Skill
@@ -260,6 +264,7 @@ await Promise.all(tasks.filter(t => !t.skip).map(dispatchSubagent))
 **Trigger:** Human approves research report
 
 **Steps:**
+
 1. Load research report
 2. Generate high-level approach with:
    - Goal summary
@@ -277,6 +282,7 @@ await Promise.all(tasks.filter(t => !t.skip).map(dispatchSubagent))
 **Trigger:** After implementation tasks defined
 
 **Steps:**
+
 1. Analyze scope of changes
 2. Estimate lines of code
 3. Identify layer boundaries (DB, API, UI)
@@ -295,6 +301,7 @@ await Promise.all(tasks.filter(t => !t.skip).map(dispatchSubagent))
 **Trigger:** After code changes made
 
 **Steps:**
+
 1. Dispatch subagents for each quality check (to avoid context flooding):
    - Subagent 1: `pnpm lint`
    - Subagent 2: `pnpm format:check`
@@ -310,6 +317,7 @@ await Promise.all(tasks.filter(t => !t.skip).map(dispatchSubagent))
 **Trigger:** Quality gates pass
 
 **Steps:**
+
 1. Dispatch review subagents:
    - **CodeRabbit CLI:** Run `coderabbit review` (if available)
    - **Agent Review:** Standard code review pass
@@ -330,6 +338,7 @@ await Promise.all(tasks.filter(t => !t.skip).map(dispatchSubagent))
 **Trigger:** Review complete, code ready
 
 **Steps:**
+
 1. Use tmux to start dev server:
    ```bash
    tmux new-window -n "dev-server" -d
@@ -346,21 +355,27 @@ await Promise.all(tasks.filter(t => !t.skip).map(dispatchSubagent))
 **Trigger:** Human approves final QA
 
 **Steps:**
+
 1. Check for conflicts with main
 2. Generate PR description from template:
+
    ```markdown
    ## Summary
+
    {one sentence from ticket}
-   
+
    ## Changes
+
    - **What**: {changes made}
    - **Breaking**: {if any}
-   
+
    ## Review Focus
+
    {key decisions or edge cases}
-   
+
    Fixes #{issue_number}
    ```
+
 3. Determine area labels from files changed
 4. Create PR: `gh pr create ...`
 5. Print PR link
@@ -374,11 +389,13 @@ await Promise.all(tasks.filter(t => !t.skip).map(dispatchSubagent))
 
 ```markdown
 ## For ComfyUI Backend/API questions:
+
 - Use context7 or deepwiki MCP: `deepwiki.com/Comfy-Org/ComfyUI`
 - Check embedded-docs repo for node documentation
 - Reference: https://docs.comfy.org
 
 ## For ComfyUI Frontend questions:
+
 - Use deepwiki: `deepwiki.com/Comfy-Org/ComfyUI_frontend`
 - Check local AGENTS.md for conventions
 ```
@@ -387,6 +404,7 @@ await Promise.all(tasks.filter(t => !t.skip).map(dispatchSubagent))
 
 ```markdown
 ## For testing patterns:
+
 1. Read `ComfyUI_frontend/docs/testing/README.md`
 2. Component tests: `docs/testing/component-testing.md`
 3. Unit tests: `docs/testing/unit-testing.md`
@@ -415,6 +433,7 @@ gh pr list --state merged --search "path/to/file"
 ## Part 8: Next Steps
 
 ### Immediate (This Session)
+
 1. [x] Create pipeline diagram
 2. [x] Create this implementation plan
 3. [ ] Research Notion MCP options
@@ -422,6 +441,7 @@ gh pr list --state merged --search "path/to/file"
 5. [ ] Create research prompt templates
 
 ### Short-Term (Next Sessions)
+
 1. [ ] Build `ticket-intake` skill
 2. [ ] Build `research-orchestrator` skill
 3. [ ] Create subagent prompt templates
@@ -429,6 +449,7 @@ gh pr list --state merged --search "path/to/file"
 5. [ ] Test with a real ticket
 
 ### Medium-Term
+
 1. [ ] Build remaining skills
 2. [ ] Setup dashboard in Notion
 3. [ ] Create helper scripts
@@ -444,6 +465,7 @@ gh pr list --state merged --search "path/to/file"
 **Official Notion MCP is available!** Hosted at `https://mcp.notion.com/mcp`
 
 **Setup for Amp/Claude Code:**
+
 ```bash
 claude mcp add --transport http notion https://mcp.notion.com/mcp
 ```
@@ -451,6 +473,7 @@ claude mcp add --transport http notion https://mcp.notion.com/mcp
 Then authenticate via `/mcp` command and OAuth flow.
 
 **Supported Tools:**
+
 - `notion-search` - Search across workspace
 - `notion-fetch` - Get page content
 - Create/update pages
@@ -468,6 +491,7 @@ Then authenticate via `/mcp` command and OAuth flow.
 **Status:** Slack MCP is being rolled out to select partners only (Claude.ai, Perplexity).
 
 **Available Features (when accessible):**
+
 - Search messages and files
 - Read channels and threads
 - Send messages
@@ -475,6 +499,7 @@ Then authenticate via `/mcp` command and OAuth flow.
 - Fetch user profiles
 
 **Workarounds:**
+
 1. **Composio MCP** - Third-party integration that provides Slack access
 2. **Manual Slack App** - Create custom Slack app with OAuth scopes:
    - `channels:history`, `channels:read`, `chat:write`, `search:read.public`
@@ -487,11 +512,13 @@ Then authenticate via `/mcp` command and OAuth flow.
 ### CodeRabbit CLI ✅ READY
 
 **Installation:**
+
 ```bash
 curl -fsSL https://cli.coderabbit.ai/install.sh | sh
 ```
 
 **Usage for AI Agents:**
+
 ```bash
 # Prompt-only mode for agent consumption
 coderabbit --prompt-only
@@ -504,10 +531,12 @@ coderabbit --prompt-only --base develop
 ```
 
 **Rate Limits:**
+
 - Free: 2 reviews/hour
 - Pro: 8 reviews/hour
 
 **Features:**
+
 - Detects claude.md, cursor rules, coding agent files
 - One-click fixes
 - Context-aware reviews (paid)
@@ -518,11 +547,13 @@ coderabbit --prompt-only --base develop
 ### Graphite CLI
 
 **Check if installed:**
+
 ```bash
 which gt || npm install -g @withgraphite/graphite-cli
 ```
 
 **Stacking workflow:**
+
 ```bash
 gt create    # Create stacked PR
 gt submit    # Submit stack
@@ -533,11 +564,11 @@ gt sync      # Sync after merges
 
 ### Summary of Tool Readiness
 
-| Tool | Status | Action |
-|------|--------|--------|
-| Notion MCP | ✅ Ready | Setup OAuth, test tools |
-| Slack MCP | ⚠️ Limited | Use manual copy-paste for MVP |
-| CodeRabbit CLI | ✅ Ready | Install and test |
-| Graphite CLI | ✅ Available | Install if needed |
-| Chrome DevTools MCP | ✅ Ready | Already available |
-| worktree-utils | ✅ Ready | Already installed |
+| Tool                | Status       | Action                        |
+| ------------------- | ------------ | ----------------------------- |
+| Notion MCP          | ✅ Ready     | Setup OAuth, test tools       |
+| Slack MCP           | ⚠️ Limited   | Use manual copy-paste for MVP |
+| CodeRabbit CLI      | ✅ Ready     | Install and test              |
+| Graphite CLI        | ✅ Available | Install if needed             |
+| Chrome DevTools MCP | ✅ Ready     | Already available             |
+| worktree-utils      | ✅ Ready     | Already installed             |

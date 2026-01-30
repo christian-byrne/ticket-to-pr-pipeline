@@ -17,13 +17,13 @@ Manages chains of dependent PRs using [Graphite CLI](https://graphite.dev/docs/g
 
 Graphite tracks branch dependencies automatically. Key commands:
 
-| Command | Purpose |
-|---------|---------|
+| Command                | Purpose                              |
+| ---------------------- | ------------------------------------ |
 | `gt create -m "title"` | Create new branch stacked on current |
-| `gt submit` | Create/update PRs for entire stack |
-| `gt sync` | Rebase stack onto latest trunk |
-| `gt log` | View stack structure |
-| `gt down` / `gt up` | Navigate stack |
+| `gt submit`            | Create/update PRs for entire stack   |
+| `gt sync`              | Rebase stack onto latest trunk       |
+| `gt log`               | View stack structure                 |
+| `gt down` / `gt up`    | Navigate stack                       |
 
 ## Workflow
 
@@ -65,6 +65,7 @@ gt log
 ```
 
 Output:
+
 ```
 ◉ feat: add UI components [3/N] (current)
 │
@@ -84,6 +85,7 @@ gt submit --stack
 ```
 
 Graphite creates PRs with:
+
 - Correct base branches (each PR targets previous)
 - Stack visualization in PR description
 - Auto-updates when you push changes
@@ -124,6 +126,7 @@ gt sync  # Updates stack after merges
 ## Stack Patterns
 
 ### Feature Stack (typical)
+
 ```bash
 gt create -m "feat: add types [1/4]"
 # ... implement types ...
@@ -137,6 +140,7 @@ gt submit --stack
 ```
 
 ### Refactor Stack
+
 ```bash
 gt create -m "refactor: add deprecation warnings [1/3]"
 gt create -m "refactor: introduce new implementation [2/3]"
@@ -193,8 +197,8 @@ Use Graphite's dashboard at https://app.graphite.dev for stack visualization.
 
 ## Output Artifacts
 
-| File | Location | Description |
-|------|----------|-------------|
+| File        | Location                       | Description         |
+| ----------- | ------------------------------ | ------------------- |
 | status.json | `runs/{ticket-id}/status.json` | Stack tracking info |
 
 ## Resources

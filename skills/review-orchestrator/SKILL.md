@@ -1,6 +1,6 @@
 ---
 name: review-orchestrator
-description: "Dispatch review subagents, compile feedback, triage for human decision. Use after quality gates pass."
+description: 'Dispatch review subagents, compile feedback, triage for human decision. Use after quality gates pass.'
 ---
 
 # Review Orchestrator
@@ -37,6 +37,7 @@ If no changes or CodeRabbit missing, stop and inform user.
 ### 2. Gather Context
 
 Collect before dispatching subagents:
+
 - List of changed files: `git diff --name-only HEAD~1`
 - The run directory path (for saving review-comments.md)
 - Ticket requirements from `ticket.json` if available
@@ -47,6 +48,7 @@ Collect before dispatching subagents:
 Use the Task tool to dispatch three parallel review subagents:
 
 **Subagent 1: CodeRabbit Review**
+
 ```
 Run CodeRabbit CLI review on the current changes.
 
@@ -56,7 +58,7 @@ coderabbit --prompt-only --type uncommitted
 
 Parse output and categorize findings by severity:
 - Critical: Security, race conditions, data loss
-- Major: Logic errors, performance, missing error handling  
+- Major: Logic errors, performance, missing error handling
 - Minor: Code style, naming
 - Nitpick: Formatting preferences
 
@@ -64,6 +66,7 @@ Return structured list with file:line, issue, suggested fix.
 ```
 
 **Subagent 2: Agent Code Review**
+
 ```
 Perform comprehensive code review of the changes.
 
@@ -82,6 +85,7 @@ Return findings with severity (Critical/Major/Minor), location (file:line), and 
 ```
 
 **Subagent 3: Pattern Compliance Review**
+
 ```
 Check code against ComfyUI_frontend patterns and AGENTS.md guidelines.
 
@@ -111,10 +115,11 @@ After all subagents complete:
 
 Create structured output:
 
-```markdown
+````markdown
 # Code Review Summary
 
 ## Statistics
+
 - Total findings: {count}
 - Critical: {count}
 - Major: {count}
@@ -125,17 +130,21 @@ Create structured output:
 ## Critical Issues (Must Fix)
 
 ### [C1] {Title}
+
 - **File:** `path/to/file.ts:42`
 - **Source:** CodeRabbit / Agent / Pattern
 - **Issue:** {description}
 - **Fix:**
+
 ```typescript
 // Suggested fix
 ```
+````
 
 ## Major Issues (Should Fix)
 
 ### [M1] {Title}
+
 - **File:** `path/to/file.ts:55`
 - **Source:** {source}
 - **Issue:** {description}
@@ -144,6 +153,7 @@ Create structured output:
 ## Minor Issues (Consider)
 
 ### [m1] {Title}
+
 - **File:** `path/to/file.ts:10`
 - **Issue:** {description}
 - **Fix:** {suggestion}
@@ -156,17 +166,21 @@ Create structured output:
 ## Conflicting Opinions
 
 ### {Topic}
+
 - **CodeRabbit says:** {opinion}
 - **Agent says:** {opinion}
 - **Recommendation:** {which to follow and why}
+
 ```
 
 ### 6. Present Triage Interface
 
 ```
+
 Review complete. {X} findings across {Y} files.
 
 For each finding, respond with:
+
 - Numbers to implement (e.g., "C1, M1, M3")
 - "all critical" - implement all critical
 - "all major" - implement all critical + major
@@ -175,7 +189,8 @@ For each finding, respond with:
 - "clarify M2" - need more info on item
 
 Your response:
-```
+
+````
 
 Wait for human decision.
 
@@ -200,11 +215,12 @@ Update `status.json`:
   "selectedFixes": ["C1", "M1", "M2"],
   "skippedItems": ["N1", "N2"]
 }
-```
+````
 
 ### 8. Handle Implementation
 
 For selected items:
+
 - Dispatch fix subagents for each selected item, OR
 - Return to implementation phase with specific fix list
 
@@ -212,12 +228,12 @@ After fixes, re-run affected quality gates to verify.
 
 ## Severity Definitions
 
-| Severity | Description | Action |
-|----------|-------------|--------|
+| Severity | Description                                                | Action             |
+| -------- | ---------------------------------------------------------- | ------------------ |
 | Critical | Security issues, race conditions, data loss, breaking bugs | Must fix before PR |
-| Major | Logic errors, performance issues, missing error handling | Should fix |
-| Minor | Code style, naming, documentation | Consider fixing |
-| Nitpick | Formatting, personal preference | Optional |
+| Major    | Logic errors, performance issues, missing error handling   | Should fix         |
+| Minor    | Code style, naming, documentation                          | Consider fixing    |
+| Nitpick  | Formatting, personal preference                            | Optional           |
 
 ## Rate Limiting
 
@@ -226,6 +242,7 @@ CodeRabbit Pro: 8 reviews/hour. Track usage and warn if approaching limit.
 ## Fallback
 
 If CodeRabbit is unavailable:
+
 1. Skip CodeRabbit subagent
 2. Note in review summary: "CodeRabbit review skipped: {reason}"
 3. Continue with Agent and Pattern reviews
