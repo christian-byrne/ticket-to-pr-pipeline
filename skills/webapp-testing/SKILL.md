@@ -19,7 +19,7 @@ Automated visual verification of frontend changes using Playwright. Takes screen
 Use tmux to run server in background:
 
 ```bash
-tmux new-session -d -s comfy-dev "cd /home/cbyrne/cross-repo-tasks/ticket-to-pr-e2e-agent-pipeline/ComfyUI_frontend && pnpm dev"
+tmux new-session -d -s comfy-dev "cd $COMFY_FRONTEND && pnpm dev"
 ```
 
 Wait for server ready:

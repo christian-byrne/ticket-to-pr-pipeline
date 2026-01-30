@@ -150,7 +150,7 @@ C) Done for now
 
 **If updating Notion (Option A):**
 
-⚠️ Follow [Notion Write Safety](/home/cbyrne/repos/ticket-to-pr-pipeline/docs/notion-write-safety.md) rules.
+⚠️ Follow [Notion Write Safety]($PIPELINE_ROOT/docs/notion-write-safety.md) rules.
 
 - Validate transition In Review → Done is valid
 - Log to `status.json`:

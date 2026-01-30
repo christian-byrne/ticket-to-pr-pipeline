@@ -128,7 +128,7 @@ gh pr create \
 
 ### 9. Update Notion
 
-**⚠️ Follow [Notion Write Safety](/home/cbyrne/repos/ticket-to-pr-pipeline/docs/notion-write-safety.md) rules.**
+**⚠️ Follow [Notion Write Safety]($PIPELINE_ROOT/docs/notion-write-safety.md) rules.**
 
 Using Notion MCP:
 

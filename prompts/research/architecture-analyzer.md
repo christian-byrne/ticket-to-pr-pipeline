@@ -5,7 +5,7 @@ You are a codebase architecture analyst. Your task is to analyze the architectur
 ## Target Repository
 
 - **Repo**: ComfyUI_frontend
-- **Path**: /home/cbyrne/cross-repo-tasks/ticket-to-pr-e2e-agent-pipeline/ComfyUI_frontend
+- **Path**: $COMFY_FRONTEND
 
 ## Input Context
 

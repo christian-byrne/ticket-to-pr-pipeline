@@ -5,7 +5,7 @@ You are a code pattern analyst. Your task is to find existing patterns in the co
 ## Target Repository
 
 - **Repo**: ComfyUI_frontend
-- **Path**: /home/cbyrne/cross-repo-tasks/ticket-to-pr-e2e-agent-pipeline/ComfyUI_frontend
+- **Path**: $COMFY_FRONTEND
 
 ## Input Context
 

@@ -28,7 +28,7 @@ Dispatches parallel research subagents to gather comprehensive context for imple
 Read `ticket.json` from the current run directory:
 
 ```
-/home/cbyrne/repos/ticket-to-pr-pipeline/runs/{ticket-id}/ticket.json
+$PIPELINE_ROOT/runs/{ticket-id}/ticket.json
 ```
 
 Extract:
@@ -75,13 +75,13 @@ Use Task tool to dispatch each research area in parallel.
 **Target repository:**
 
 ```
-/home/cbyrne/cross-repo-tasks/ticket-to-pr-e2e-agent-pipeline/ComfyUI_frontend
+$COMFY_FRONTEND
 ```
 
 **Prompt templates location:**
 
 ```
-/home/cbyrne/repos/ticket-to-pr-pipeline/prompts/research/
+$PIPELINE_ROOT/prompts/research/
 ```
 
 **Template variables to fill:**
@@ -103,7 +103,7 @@ AFFECTED FILES: {affected_files}
 
 YOUR TASK: {content from prompt template}
 
-REPOSITORY: /home/cbyrne/cross-repo-tasks/ticket-to-pr-e2e-agent-pipeline/ComfyUI_frontend
+REPOSITORY: $COMFY_FRONTEND
 
 OUTPUT FORMAT: {format section from prompt template}
 
@@ -294,7 +294,7 @@ Note failure in research report but don't block other subagents.
 ```
 ❌ ticket.json not found in run directory.
 
-Expected location: /home/cbyrne/repos/ticket-to-pr-pipeline/runs/{ticket-id}/ticket.json
+Expected location: $PIPELINE_ROOT/runs/{ticket-id}/ticket.json
 
 Please run ticket-intake first.
 ```

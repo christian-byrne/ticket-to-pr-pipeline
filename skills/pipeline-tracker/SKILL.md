@@ -20,7 +20,7 @@ Parse the user's request to determine which command to run:
 ## Configuration
 
 ```
-RUNS_DIR=/home/cbyrne/repos/ticket-to-pr-pipeline/runs
+RUNS_DIR=$PIPELINE_ROOT/runs
 NOTION_DATABASE=Comfy Tasks
 ```
 
@@ -29,13 +29,13 @@ NOTION_DATABASE=Comfy Tasks
 1. **Scan runs directory:**
 
    ```bash
-   ls /home/cbyrne/repos/ticket-to-pr-pipeline/runs/
+   ls $PIPELINE_ROOT/runs/
    ```
 
 2. **For each run directory**, read `status.json`:
 
    ```bash
-   cat /home/cbyrne/repos/ticket-to-pr-pipeline/runs/{ticket-id}/status.json
+   cat $PIPELINE_ROOT/runs/{ticket-id}/status.json
    ```
 
 3. **Present dashboard:**
@@ -84,7 +84,7 @@ NOTION_DATABASE=Comfy Tasks
 
 Update Notion with current pipeline status.
 
-**⚠️ Follow [Notion Write Safety](/home/cbyrne/repos/ticket-to-pr-pipeline/docs/notion-write-safety.md) rules for all writes.**
+**⚠️ Follow [Notion Write Safety]($PIPELINE_ROOT/docs/notion-write-safety.md) rules for all writes.**
 
 1. **For each active run:**
    - Read `ticket.json` for Notion page ID (required - skip if missing)
@@ -137,7 +137,7 @@ Resume a paused or stale pipeline run.
 1. **Load status:**
 
    ```bash
-   cat /home/cbyrne/repos/ticket-to-pr-pipeline/runs/{ticket-id}/status.json
+   cat $PIPELINE_ROOT/runs/{ticket-id}/status.json
    ```
 
 2. **Determine next skill based on phase:**
@@ -176,7 +176,7 @@ Clean up completed runs.
 1. **Find completed runs** (status = "done"):
 
    ```bash
-   for dir in /home/cbyrne/repos/ticket-to-pr-pipeline/runs/*/; do
+   for dir in $PIPELINE_ROOT/runs/*/; do
      if [ -f "$dir/status.json" ]; then
        status=$(cat "$dir/status.json" | jq -r '.status')
        if [ "$status" = "done" ]; then
@@ -198,9 +198,9 @@ Clean up completed runs.
 3. **Archive (move to archive/):**
 
    ```bash
-   mkdir -p /home/cbyrne/repos/ticket-to-pr-pipeline/runs/archive
-   mv /home/cbyrne/repos/ticket-to-pr-pipeline/runs/{ticket-id} \
-      /home/cbyrne/repos/ticket-to-pr-pipeline/runs/archive/
+   mkdir -p $PIPELINE_ROOT/runs/archive
+   mv $PIPELINE_ROOT/runs/{ticket-id} \
+      $PIPELINE_ROOT/runs/archive/
    ```
 
 4. **Report:**

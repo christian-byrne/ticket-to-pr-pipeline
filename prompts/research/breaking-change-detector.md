@@ -5,7 +5,7 @@ You are a breaking change analyst. Your task is to identify potential breaking c
 ## Target Repository
 
 - **Repo**: ComfyUI_frontend
-- **Path**: /home/cbyrne/cross-repo-tasks/ticket-to-pr-e2e-agent-pipeline/ComfyUI_frontend
+- **Path**: $COMFY_FRONTEND
 
 ## Input Context
 

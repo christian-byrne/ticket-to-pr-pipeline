@@ -69,7 +69,7 @@ Extract these properties (names may vary):
 Create directory structure at:
 
 ```
-/home/cbyrne/repos/ticket-to-pr-pipeline/runs/{ticket-id}/
+$PIPELINE_ROOT/runs/{ticket-id}/
 ├── status.json          # Current pipeline status
 ├── ticket.json          # Extracted ticket data
 ├── research-report.md   # (created later)
@@ -116,7 +116,7 @@ Create directory structure at:
 
 **⚠️ DO NOT SKIP THIS STEP. This is a required action, not optional.**
 
-**⚠️ Follow [Notion Write Safety](/home/cbyrne/repos/ticket-to-pr-pipeline/docs/notion-write-safety.md) rules.**
+**⚠️ Follow [Notion Write Safety]($PIPELINE_ROOT/docs/notion-write-safety.md) rules.**
 
 Use `Notion:notion-update-page` to update the ticket:
 
@@ -195,7 +195,7 @@ Print a clear summary:
 
 ### Pipeline Run
 
-- **Directory:** /home/cbyrne/repos/ticket-to-pr-pipeline/runs/abc12345/
+- **Directory:** $PIPELINE_ROOT/runs/abc12345/
 - **Status:** Research phase initialized
 
 ---
@@ -258,7 +258,7 @@ When assigning tickets, use these identifiers:
 | --------------- | -------------------------------------- |
 | Notion User ID  | `175d872b-594c-81d4-ba5a-0002911c5966` |
 | Notion Name     | Christian Byrne                        |
-| Notion Email    | <cbyrne@comfy.org>                       |
+| Notion Email    | <user@example.org>                       |
 | Slack User ID   | U087MJCDHHC                            |
 | GitHub Username | christian-byrne                        |
 

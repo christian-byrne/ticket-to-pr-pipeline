@@ -241,7 +241,22 @@ cd ticket-to-pr-pipeline
 ./setup.sh
 ```
 
-This installs all 17 skills to `~/.claude/skills/` via symlinks.
+This installs all 17 skills to `~/.claude/skills/` via symlinks and creates an environment config.
+
+### Environment Variables
+
+After running setup, edit `~/.config/ticket-to-pr-pipeline/env`:
+
+| Variable          | Description                          | Example                              |
+| ----------------- | ------------------------------------ | ------------------------------------ |
+| `PIPELINE_ROOT`   | Path to this repository (auto-set)   | `/home/user/ticket-to-pr-pipeline`   |
+| `COMFY_FRONTEND`  | Path to your ComfyUI_frontend clone  | `/home/user/repos/ComfyUI_frontend`  |
+
+Add to your shell profile:
+
+```bash
+source ~/.config/ticket-to-pr-pipeline/env
+```
 
 ---
 
