@@ -11,20 +11,20 @@ Run quality checks via subagents to keep main context clean.
 
 - After implementation is complete
 - Before creating a PR
-- In ComfyUI_frontend directory
+- In target repository directory
 
 ## Prerequisites
 
-1. In ComfyUI_frontend directory
+1. In target repository directory (the repo being worked on)
 2. Changes exist (unstaged or staged)
 
 ## Workflow
 
 ### 1. Verify Directory
 
-Confirm in ComfyUI_frontend and check for changes:
+Confirm in target repository and check for changes:
 ```bash
-pwd  # Should be in ComfyUI_frontend
+pwd  # Should be in target repository
 git status --short  # Should show modified files
 ```
 
@@ -34,42 +34,42 @@ Create tasks for each quality gate using the Task tool. Dispatch all in parallel
 
 **Task 1: Lint**
 ```
-Run `pnpm lint` in ComfyUI_frontend directory.
+Run the lint command (e.g., `pnpm lint` or per AGENTS.md) in the target repository.
 Report: PASS or FAIL with specific errors and file:line locations.
 If FAIL, suggest specific fixes for each error.
 ```
 
 **Task 2: Format**
 ```
-Run `pnpm format:check` in ComfyUI_frontend directory.
+Run the format check command (e.g., `pnpm format:check`) in the target repository.
 Report: PASS or FAIL.
-If FAIL, run `pnpm format` to fix and report files changed.
+If FAIL, run the format fix command and report files changed.
 ```
 
 **Task 3: Typecheck**
 ```
-Run `pnpm typecheck` in ComfyUI_frontend directory.
+Run the typecheck command (e.g., `pnpm typecheck`) in the target repository.
 Report: PASS or FAIL with specific type errors and locations.
 For each error, suggest the fix.
 ```
 
-**Task 4: Knip**
+**Task 4: Unused Code Check** (if available)
 ```
-Run `pnpm knip` in ComfyUI_frontend directory.
+Run unused code detection (e.g., `pnpm knip`) if configured.
 Report: PASS or FAIL with unused exports/dependencies found.
 Suggest removals for each finding.
 ```
 
 **Task 5: Unit Tests**
 ```
-Run `pnpm test:unit` in ComfyUI_frontend directory.
+Run unit tests (e.g., `pnpm test:unit` or per AGENTS.md) in the target repository.
 Report: PASS with test count, or FAIL with failing test names and errors.
 For failures, include the assertion that failed.
 ```
 
-**Task 6: Stylelint** (only if CSS changes exist)
+**Task 6: Style Lint** (only if CSS changes exist)
 ```
-Run `pnpm stylelint` in ComfyUI_frontend directory.
+Run style linting (e.g., `pnpm stylelint`) if configured.
 Report: PASS or FAIL with issues found.
 ```
 
@@ -131,21 +131,21 @@ For non-auto-fixable issues, dispatch fix subagents:
 
 **Type Error Fix Subagent:**
 ```
-Fix the following type error in ComfyUI_frontend:
+Fix the following type error:
 File: {file}
 Line: {line}
 Error: {error message}
 Context: {surrounding code}
-Apply the fix and verify with `pnpm typecheck`.
+Apply the fix and verify with the typecheck command.
 ```
 
 **Test Failure Investigation Subagent:**
 ```
-Investigate failing test in ComfyUI_frontend:
+Investigate failing test:
 Test: {test name}
 File: {test file}
 Assertion: {failed assertion}
-Determine root cause and fix. Re-run `pnpm test:unit` to verify.
+Determine root cause and fix. Re-run tests to verify.
 ```
 
 ### 6. Re-run Failing Gates

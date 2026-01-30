@@ -1,12 +1,12 @@
 # Ticket-to-PR Pipeline
 
-An AI-powered pipeline that transforms Notion tickets into production-ready pull requests on **ComfyUI_frontend**, with human checkpoints at every critical decision point.
+An AI-powered pipeline that transforms Notion tickets into production-ready pull requests, with human checkpoints at every critical decision point.
 
 ## Overview
 
 This pipeline automates the journey from a ticket to a merged PR by orchestrating AI agents through structured phases: research, planning, implementation, review, and PR creation. Each phase includes human checkpoints to ensure quality and alignment with requirements.
 
-**Target Repository:** [ComfyUI_frontend](https://github.com/Comfy-Org/ComfyUI_frontend)
+**Target Repository:** Configure in your project's AGENTS.md or environment
 
 ### Key Features
 
@@ -132,7 +132,7 @@ Use `pipeline-tracker` at any point to:
 ```
 Load the ticket-intake skill and provide a Notion ticket URL:
 
-> Please process this ticket: https://notion.so/comfy-org/your-ticket-id
+> Please process this ticket: https://notion.so/your-workspace/your-ticket-id
 ```
 
 ### 2. Follow the Checkpoints
@@ -190,22 +190,44 @@ ticket-to-pr-pipeline/
 
 ## Configuration
 
-### Quality Gates
+### Environment Variables
 
-The pipeline runs these checks via `quality-gates-runner`:
+Set these in your shell or project's AGENTS.md:
 
 ```bash
-pnpm lint          # ESLint
-pnpm format:check  # Prettier
+# Required: Path to this pipeline repository
+export PIPELINE_ROOT="$HOME/repos/ticket-to-pr-pipeline"
+
+# Optional: Configure for your organization
+export NOTION_DATABASE="Your Tasks Database"
+export SLACK_ORG="your-org"
+```
+
+### User Configuration
+
+Each user should configure their identifiers in the target repository's AGENTS.md:
+
+```markdown
+## Pipeline Owner
+- Notion User ID: `your-notion-user-id`
+- GitHub Username: your-github-username
+- Slack User ID: YOUR_SLACK_ID
+```
+
+### Quality Gates
+
+The pipeline runs these checks via `quality-gates-runner`. Configure commands in your target repository's AGENTS.md:
+
+```bash
+pnpm lint          # ESLint (or your lint command)
+pnpm format:check  # Formatter check
 pnpm typecheck     # TypeScript
-pnpm knip          # Dead code detection
-pnpm test:unit     # Vitest
-pnpm stylelint     # CSS/SCSS linting
+pnpm test:unit     # Unit tests
 ```
 
 ### PR Labels
 
-The `pr-creator` skill automatically adds labels based on files changed:
+The `pr-creator` skill automatically adds labels based on files changed. Customize the mappings in your workflow:
 
 | Files Changed | Label |
 |---------------|-------|
