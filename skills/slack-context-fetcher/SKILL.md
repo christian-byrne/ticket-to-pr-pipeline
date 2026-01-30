@@ -24,6 +24,7 @@ Example: https://comfy-org.slack.com/archives/C07ABCD1234/p1234567890123456
 ```
 
 Extract:
+
 - `channel_id`: C07ABCD1234
 - `thread_ts`: 1234567890.123456 (insert decimal before last 6 digits)
 
@@ -58,9 +59,11 @@ curl -s -H "Authorization: Bearer $SLACK_BOT_TOKEN" \
 ### Full Thread
 
 **Alice** (2024-01-15 10:30):
+
 > Original message about the issue...
 
 **Bob** (2024-01-15 10:45):
+
 > Response with context...
 ```
 
@@ -76,6 +79,7 @@ jq '.slackThreads += [{"url": "...", "fetched": "...", "messages": N}]' \
 ## Integration with ticket-intake
 
 During ticket-intake, if Slack URLs detected:
+
 1. Parse channel ID and thread timestamp
 2. Fetch thread content
 3. Save to slack-context.md
@@ -83,15 +87,15 @@ During ticket-intake, if Slack URLs detected:
 
 ## Error Handling
 
-| Error | Cause | Resolution |
-|-------|-------|------------|
-| `channel_not_found` | Invalid channel ID | Verify URL |
-| `not_in_channel` | Bot not added | Add bot to channel |
-| `invalid_auth` | Bad token | Check SLACK_BOT_TOKEN |
+| Error               | Cause              | Resolution            |
+| ------------------- | ------------------ | --------------------- |
+| `channel_not_found` | Invalid channel ID | Verify URL            |
+| `not_in_channel`    | Bot not added      | Add bot to channel    |
+| `invalid_auth`      | Bad token          | Check SLACK_BOT_TOKEN |
 
 ## Output Artifacts
 
-| File | Location | Description |
-|------|----------|-------------|
-| slack-context.md | `runs/{ticket-id}/slack-context.md` | Thread content |
-| ticket.json | `runs/{ticket-id}/ticket.json` | Updated with slack refs |
+| File             | Location                            | Description             |
+| ---------------- | ----------------------------------- | ----------------------- |
+| slack-context.md | `runs/{ticket-id}/slack-context.md` | Thread content          |
+| ticket.json      | `runs/{ticket-id}/ticket.json`      | Updated with slack refs |

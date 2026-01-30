@@ -6,11 +6,11 @@ Reference document for skills that write to Notion. All Notion writes MUST follo
 
 Only these fields may be written:
 
-| Field | Type | Allowed Values |
-|-------|------|----------------|
-| Status | Select | `Not Started`, `In Progress`, `In Review`, `Done` |
-| GitHub PR | URL | Valid GitHub PR URL matching `^https://github\.com/[^/]+/[^/]+/pull/\d+$` |
-| Assignee | Person | Assign only, never unassign existing |
+| Field     | Type   | Allowed Values                                                            |
+| --------- | ------ | ------------------------------------------------------------------------- |
+| Status    | Select | `Not Started`, `In Progress`, `In Review`, `Done`                         |
+| GitHub PR | URL    | Valid GitHub PR URL matching `^https://github\.com/[^/]+/[^/]+/pull/\d+$` |
+| Assignee  | Person | Assign only, never unassign existing                                      |
 
 **All other fields are READ-ONLY.**
 
@@ -22,9 +22,9 @@ Before any Notion write, validate:
 
 ```javascript
 // Page ID must exist in ticket.json
-const ticket = JSON.parse(fs.readFileSync('ticket.json'));
+const ticket = JSON.parse(fs.readFileSync('ticket.json'))
 if (!ticket.pageId && !ticket.id) {
-  throw new Error('No valid page ID in ticket.json');
+  throw new Error('No valid page ID in ticket.json')
 }
 ```
 
@@ -32,33 +32,33 @@ if (!ticket.pageId && !ticket.id) {
 
 Only these transitions are allowed:
 
-| From | Allowed To |
-|------|------------|
-| Not Started | In Progress |
-| In Progress | In Review, Not Started |
-| In Review | Done, In Progress |
-| Done | (no further transitions) |
+| From        | Allowed To               |
+| ----------- | ------------------------ |
+| Not Started | In Progress              |
+| In Progress | In Review, Not Started   |
+| In Review   | Done, In Progress        |
+| Done        | (no further transitions) |
 
 ```javascript
 const VALID_TRANSITIONS = {
   'Not Started': ['In Progress'],
   'In Progress': ['In Review', 'Not Started'],
   'In Review': ['Done', 'In Progress'],
-  'Done': []
-};
+  Done: [],
+}
 
 function isValidTransition(from, to) {
-  return VALID_TRANSITIONS[from]?.includes(to) ?? false;
+  return VALID_TRANSITIONS[from]?.includes(to) ?? false
 }
 ```
 
 ### 3. PR URL Validation
 
 ```javascript
-const PR_URL_PATTERN = /^https:\/\/github\.com\/[^/]+\/[^/]+\/pull\/\d+$/;
+const PR_URL_PATTERN = /^https:\/\/github\.com\/[^/]+\/[^/]+\/pull\/\d+$/
 
 function isValidPrUrl(url) {
-  return PR_URL_PATTERN.test(url);
+  return PR_URL_PATTERN.test(url)
 }
 ```
 
@@ -95,15 +95,15 @@ Add to `status.json`:
 
 ### Log Entry Fields
 
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| field | string | Yes | Field being written |
-| value | string | Yes | New value |
-| previousValue | string\|null | Yes | Previous value (null if unknown) |
-| at | ISO8601 | Yes | Timestamp of attempt |
-| skill | string | Yes | Skill name performing write |
-| success | boolean | Yes | Whether write succeeded |
-| error | string | No | Error message if failed |
+| Field         | Type         | Required | Description                      |
+| ------------- | ------------ | -------- | -------------------------------- |
+| field         | string       | Yes      | Field being written              |
+| value         | string       | Yes      | New value                        |
+| previousValue | string\|null | Yes      | Previous value (null if unknown) |
+| at            | ISO8601      | Yes      | Timestamp of attempt             |
+| skill         | string       | Yes      | Skill name performing write      |
+| success       | boolean      | Yes      | Whether write succeeded          |
+| error         | string       | No       | Error message if failed          |
 
 ## Pre-Write Checklist
 
@@ -125,6 +125,7 @@ Before writing to Notion:
 6. [ ] Failure handling ready (continue pipeline, don't block)
 
 After write:
+
 - [ ] Update notionWrites array in status.json
 - [ ] Set success: true/false
 - [ ] Include error message if failed
@@ -135,17 +136,17 @@ After write:
 ```mermaid
 stateDiagram-v2
     [*] --> NotStarted
-    
+
     NotStarted --> InProgress: Start work
-    
+
     InProgress --> InReview: Create PR
     InProgress --> NotStarted: Pause work
-    
+
     InReview --> Done: PR merged
     InReview --> InProgress: Needs changes
-    
+
     Done --> [*]
-    
+
     note right of NotStarted: Initial state
     note right of Done: Terminal state\nNo further transitions
 ```
@@ -164,7 +165,7 @@ log_notion_write() {
   local success="$5"
   local error="${6:-null}"
   local timestamp=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
-  
+
   jq --arg f "$field" \
      --arg v "$value" \
      --arg pv "$prev_value" \
@@ -215,6 +216,7 @@ Logged to: status.json → notionWrites
 This document: `/home/cbyrne/repos/ticket-to-pr-pipeline/docs/notion-write-safety.md`
 
 Skills using this reference:
+
 - `ticket-intake` - Updates Status to "In Progress"
 - `pr-creator` - Updates Status to "In Review", adds GitHub PR URL
 - `ci-checker` - May update Status to "Done"

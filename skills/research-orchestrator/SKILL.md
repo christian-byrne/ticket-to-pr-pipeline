@@ -32,6 +32,7 @@ Read `ticket.json` from the current run directory:
 ```
 
 Extract:
+
 - `title` - Ticket title
 - `description` - Full description
 - `slackLink` - Slack thread URL (if present)
@@ -43,11 +44,13 @@ Generate keywords from title and description for search queries.
 ### Step 2: Determine Research Scope
 
 **Always dispatch:**
+
 - `git-history` - Commits, blame, file history
 - `github-prs-issues` - Related PRs and issues
 - `codebase-analysis` - Patterns and affected files
 
 **Conditional dispatch:**
+
 - `notion-related` → Only if `relatedTasks` has entries or linked pages exist
 - `slack-thread` → Only if `slackLink` exists
 - `external-research` → Only if new patterns/libraries/technologies involved
@@ -70,16 +73,19 @@ Wait for user input before proceeding.
 Use Task tool to dispatch each research area in parallel.
 
 **Target repository:**
+
 ```
 /home/cbyrne/cross-repo-tasks/ticket-to-pr-e2e-agent-pipeline/ComfyUI_frontend
 ```
 
 **Prompt templates location:**
+
 ```
 /home/cbyrne/repos/ticket-to-pr-pipeline/prompts/research/
 ```
 
 **Template variables to fill:**
+
 - `{{TICKET_TITLE}}` - From ticket.json
 - `{{TICKET_DESCRIPTION}}` - From ticket.json
 - `{{KEYWORDS}}` - Extracted from title/description
@@ -154,6 +160,7 @@ Create `research-report.md` in the run directory:
 ## Next Steps
 
 Based on this research, recommended approach for planning phase:
+
 1. {recommendation 1}
 2. {recommendation 2}
 3. {recommendation 3}
@@ -182,15 +189,18 @@ Print summary for human:
 **Research Report:** {path to research-report.md}
 
 ### Findings Summary
+
 - {key finding 1}
 - {key finding 2}
 - {key finding 3}
 
 ### Affected Files Identified
+
 - {file 1}
 - {file 2}
 
 ### Recommended Reviewers
+
 - @{reviewer1} - {reason}
 - @{reviewer2} - {reason}
 
@@ -211,6 +221,7 @@ When ready, load the `plan-generator` skill to begin planning.
 Searches commits, blame, file history for relevant context.
 
 Key tasks:
+
 - Recent commits (90 days) touching affected files or keywords
 - File history and blame for ownership
 - Patterns from similar changes
@@ -220,6 +231,7 @@ Key tasks:
 Searches GitHub for related PRs and issues.
 
 Key tasks:
+
 - Open PRs that might conflict
 - Merged PRs with relevant patterns
 - Issues with useful context
@@ -232,6 +244,7 @@ Uses `gh` CLI commands.
 Analyzes ComfyUI_frontend codebase structure.
 
 Key tasks:
+
 - Identify affected files
 - Understand existing patterns
 - Check AGENTS.md guidelines
@@ -243,6 +256,7 @@ Key tasks:
 Researches external sources for best practices.
 
 Only dispatch when:
+
 - New library/dependency introduced
 - Complex pattern needing research
 - UI/UX best practices needed

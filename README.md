@@ -1,5 +1,9 @@
 # Ticket-to-PR Pipeline
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Skills](https://img.shields.io/badge/skills-17-green.svg)](#skill-loading-order)
+[![Amp](https://img.shields.io/badge/Amp-compatible-purple.svg)](https://ampcode.com)
+
 An AI-powered pipeline that transforms Notion tickets into production-ready pull requests on **ComfyUI_frontend**, with human checkpoints at every critical decision point.
 
 ## Overview
@@ -21,12 +25,12 @@ This pipeline automates the journey from a ticket to a merged PR by orchestratin
 
 ## Prerequisites
 
-| Tool | Purpose | Setup |
-|------|---------|-------|
-| **Notion MCP** | Read tickets, update status, sync dashboard | `claude mcp add --transport http notion https://mcp.notion.com/mcp` |
-| **CodeRabbit CLI** | AI code review | `curl -fsSL https://cli.coderabbit.ai/install.sh \| sh` |
-| **gh CLI** | Create PRs, check CI status | `brew install gh` or [github.com/cli/cli](https://github.com/cli/cli) |
-| **Graphite CLI** | Stacked PRs (optional) | `npm install -g @withgraphite/graphite-cli` |
+| Tool               | Purpose                                     | Setup                                                                 |
+| ------------------ | ------------------------------------------- | --------------------------------------------------------------------- |
+| **Notion MCP**     | Read tickets, update status, sync dashboard | `claude mcp add --transport http notion https://mcp.notion.com/mcp`   |
+| **CodeRabbit CLI** | AI code review                              | `curl -fsSL https://cli.coderabbit.ai/install.sh \| sh`               |
+| **gh CLI**         | Create PRs, check CI status                 | `brew install gh` or [github.com/cli/cli](https://github.com/cli/cli) |
+| **Graphite CLI**   | Stacked PRs (optional)                      | `npm install -g @withgraphite/graphite-cli`                           |
 
 ### Notion MCP Authentication
 
@@ -44,7 +48,7 @@ flowchart TB
         A[Notion Ticket URL] --> B[ticket-intake]
         B --> C[🔵 CHECKPOINT: Review ticket summary]
     end
-    
+
     subgraph RESEARCH["2. RESEARCH"]
         C --> D[research-orchestrator]
         D --> D1[Slack Thread]
@@ -54,7 +58,7 @@ flowchart TB
         D1 & D2 & D3 & D4 --> E[Compile Report]
         E --> F[🔵 CHECKPOINT: Review research]
     end
-    
+
     subgraph PLANNING["3. PLANNING"]
         F --> G[plan-generator]
         G --> H[🔵 CHECKPOINT: Review plan]
@@ -63,7 +67,7 @@ flowchart TB
         J --> K[tdd-assessor]
         K --> L[🔵 CHECKPOINT: Approve TDD approach]
     end
-    
+
     subgraph IMPLEMENTATION["4. IMPLEMENTATION"]
         L --> M[Execute Plan]
         M --> N[quality-gates-runner]
@@ -74,7 +78,7 @@ flowchart TB
         P -->|Approved| Q[final-qa-launcher]
         Q --> R[🔵 CHECKPOINT: Manual QA verification]
     end
-    
+
     subgraph PR["5. PR CREATION"]
         R --> S[pr-creator]
         S --> T[ci-checker]
@@ -82,7 +86,7 @@ flowchart TB
         U --> T
         T -->|CI passes| V[✅ Done]
     end
-    
+
     subgraph TRACKING["DASHBOARD"]
         B -.-> W[(pipeline-tracker)]
         V -.-> W
@@ -95,29 +99,30 @@ flowchart TB
 
 The pipeline executes skills sequentially with human checkpoints (🔵) between phases:
 
-| Step | Skill | Purpose | Human Checkpoint |
-|------|-------|---------|------------------|
-| 1 | `ticket-intake` | Parse Notion URL, extract ticket data | Review ticket summary |
-| 2 | `slack-context-fetcher` | Fetch Slack thread content for context | — |
-| 3 | `research-orchestrator` | Dispatch parallel research subagents | Review research report |
-| 4 | `plan-generator` | Create high-level implementation plan | Approve plan |
-| 5 | `pr-split-advisor` | Recommend vertical slices or stacked PRs | Choose split strategy |
-| 6 | `tdd-assessor` | Evaluate TDD benefit, setup test-first | Approve TDD approach |
-| 7 | `quality-gates-runner` | Run lint, typecheck, unit tests | — |
-| 8 | `coderabbit-reviewer` | AI-powered code review via CodeRabbit | — |
-| 9 | `review-orchestrator` | Dispatch CodeRabbit + agent reviewers | Triage review comments |
-| 10 | `webapp-testing` | Browser automation for testing | — |
-| 11 | `final-qa-launcher` | Start dev server, print QA checklist | Manual verification |
-| 12 | `pr-creator` | Generate description, create PR | — |
-| 13 | `stacked-pr-manager` | Manage stacked PRs via Graphite | — |
-| 14 | `ci-checker` | Monitor CI, guide fixes | — |
-| — | `pipeline-tracker` | Sync status to Notion (runs throughout) | — |
-| — | `pr-merge-watcher` | Check merged PRs, update Notion to Done | — |
-| — | `metrics-dashboard` | Track pipeline velocity and stats | — |
+| Step | Skill                   | Purpose                                  | Human Checkpoint       |
+| ---- | ----------------------- | ---------------------------------------- | ---------------------- |
+| 1    | `ticket-intake`         | Parse Notion URL, extract ticket data    | Review ticket summary  |
+| 2    | `slack-context-fetcher` | Fetch Slack thread content for context   | —                      |
+| 3    | `research-orchestrator` | Dispatch parallel research subagents     | Review research report |
+| 4    | `plan-generator`        | Create high-level implementation plan    | Approve plan           |
+| 5    | `pr-split-advisor`      | Recommend vertical slices or stacked PRs | Choose split strategy  |
+| 6    | `tdd-assessor`          | Evaluate TDD benefit, setup test-first   | Approve TDD approach   |
+| 7    | `quality-gates-runner`  | Run lint, typecheck, unit tests          | —                      |
+| 8    | `coderabbit-reviewer`   | AI-powered code review via CodeRabbit    | —                      |
+| 9    | `review-orchestrator`   | Dispatch CodeRabbit + agent reviewers    | Triage review comments |
+| 10   | `webapp-testing`        | Browser automation for testing           | —                      |
+| 11   | `final-qa-launcher`     | Start dev server, print QA checklist     | Manual verification    |
+| 12   | `pr-creator`            | Generate description, create PR          | —                      |
+| 13   | `stacked-pr-manager`    | Manage stacked PRs via Graphite          | —                      |
+| 14   | `ci-checker`            | Monitor CI, guide fixes                  | —                      |
+| —    | `pipeline-tracker`      | Sync status to Notion (runs throughout)  | —                      |
+| —    | `pr-merge-watcher`      | Check merged PRs, update Notion to Done  | —                      |
+| —    | `metrics-dashboard`     | Track pipeline velocity and stats        | —                      |
 
 ### Using `pipeline-tracker`
 
 Use `pipeline-tracker` at any point to:
+
 - Check current pipeline status
 - Resume a paused pipeline run
 - View the Notion dashboard
@@ -207,22 +212,45 @@ pnpm stylelint     # CSS/SCSS linting
 
 The `pr-creator` skill automatically adds labels based on files changed:
 
-| Files Changed | Label |
-|---------------|-------|
-| `src/components/` | `area:ui` |
-| `src/stores/` | `area:state` |
-| `src/api/` | `area:api` |
-| `tests/` | `testing` |
+| Files Changed     | Label        |
+| ----------------- | ------------ |
+| `src/components/` | `area:ui`    |
+| `src/stores/`     | `area:state` |
+| `src/api/`        | `area:api`   |
+| `tests/`          | `testing`    |
 
 ### Notion Dashboard
 
 The `pipeline-tracker` skill syncs to a Notion database with these properties:
 
-| Property | Type | Values |
-|----------|------|--------|
-| Status | Select | Not Started, Research, Planning, Implementation, Review, QA, PR Created, Done, Blocked |
-| PR Link | URL | GitHub PR URL |
-| Branch | Text | Feature branch name |
-| Current Step | Text | Active skill name |
-| Blockers | Text | Any blocking issues |
+| Property     | Type   | Values                                                                                 |
+| ------------ | ------ | -------------------------------------------------------------------------------------- |
+| Status       | Select | Not Started, Research, Planning, Implementation, Review, QA, PR Created, Done, Blocked |
+| PR Link      | URL    | GitHub PR URL                                                                          |
+| Branch       | Text   | Feature branch name                                                                    |
+| Current Step | Text   | Active skill name                                                                      |
+| Blockers     | Text   | Any blocking issues                                                                    |
 
+---
+
+## Installation
+
+```bash
+git clone https://github.com/christian-byrne/ticket-to-pr-pipeline.git
+cd ticket-to-pr-pipeline
+./setup.sh
+```
+
+This installs all 17 skills to `~/.claude/skills/` via symlinks.
+
+---
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on adding new skills.
+
+---
+
+## License
+
+[MIT](LICENSE)

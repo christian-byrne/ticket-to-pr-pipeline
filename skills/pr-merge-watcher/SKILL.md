@@ -21,7 +21,7 @@ Scan for runs in "pr-created" or "in-review" status:
 
 ```bash
 find runs/ -name "status.json" -exec jq -c \
-  'select(.status | test("pr-created|in-review|ci-passed")) | 
+  'select(.status | test("pr-created|in-review|ci-passed")) |
    {id: .ticketId, status: .status, prNumber: .prNumber, prUrl: .prUrl}' {} \; \
   2>/dev/null | grep -v '^$'
 ```
@@ -36,6 +36,7 @@ gh pr view $PR_NUMBER --json state,mergedAt --jq '{state, mergedAt}'
 ```
 
 Possible states:
+
 - `OPEN` - PR still open, skip
 - `MERGED` - PR merged, update Notion
 - `CLOSED` - PR closed without merge, mark as abandoned
@@ -55,10 +56,18 @@ PAGE_ID=$(jq -r '.notionPageId' "runs/$TICKET_ID/status.json")
 ```
 
 Log the write:
+
 ```json
 {
   "notionWrites": [
-    {"field": "Status", "value": "Done", "previousValue": "In Review", "at": "...", "skill": "pr-merge-watcher", "success": true}
+    {
+      "field": "Status",
+      "value": "Done",
+      "previousValue": "In Review",
+      "at": "...",
+      "skill": "pr-merge-watcher",
+      "success": true
+    }
   ]
 }
 ```
@@ -81,6 +90,7 @@ Ticket: {ticket title}
 PR: {pr url}
 
 Options:
+
 1. Mark ticket as abandoned (Status → Not Started)
 2. Keep current status (investigate later)
 3. Archive run locally only
@@ -97,22 +107,26 @@ Your choice:
 **Runs checked:** {N}
 
 ## Merged PRs (Updated to Done)
-| Ticket | PR | Merged At |
-|--------|-----|-----------|
+
+| Ticket  | PR   | Merged At  |
+| ------- | ---- | ---------- |
 | ABC-123 | #456 | 2024-01-15 |
 | DEF-456 | #789 | 2024-01-16 |
 
 ## Still Open
-| Ticket | PR | Status | Age |
-|--------|-----|--------|-----|
+
+| Ticket  | PR   | Status          | Age    |
+| ------- | ---- | --------------- | ------ |
 | GHI-789 | #101 | Awaiting review | 3 days |
 
 ## Closed Without Merge
-| Ticket | PR | Action Taken |
-|--------|-----|--------------|
+
+| Ticket  | PR   | Action Taken     |
+| ------- | ---- | ---------------- |
 | JKL-012 | #102 | Marked abandoned |
 
 ## Summary
+
 - **Completed:** 2 tickets marked Done
 - **Open:** 1 PR awaiting review
 - **Abandoned:** 1 closed PR
@@ -128,6 +142,7 @@ amp -c "/skill pr-merge-watcher --batch"
 ```
 
 In batch mode:
+
 - Merged PRs → Auto-update to Done
 - Closed PRs → Log warning, don't modify
 - Open PRs → Skip silently
@@ -164,18 +179,24 @@ This is more complex but provides instant updates.
 ## Edge Cases
 
 ### PR Merged to Different Branch
+
 If PR merged to non-main branch (e.g., staging):
+
 - Check if eventually merged to main
 - Or mark as "partial" completion
 
 ### Multiple PRs per Ticket (Stacked)
+
 Check stack.json for multi-PR tickets:
+
 - All PRs merged → Done
 - Some merged → Keep In Review
 - Track individual PR states
 
 ### Notion Page Deleted
+
 If ticket page no longer exists:
+
 - Log error
 - Archive run locally
 - Don't retry
@@ -183,18 +204,20 @@ If ticket page no longer exists:
 ## Integration with Pipeline
 
 **Trigger Points:**
+
 - Manual: `/skill pr-merge-watcher`
 - Via pipeline-tracker dashboard
 - Scheduled cron job
 - GitHub webhook (advanced)
 
 **Status Transitions:**
+
 - `in-review` + PR merged → `done`
 - `in-review` + PR closed → `abandoned`
 
 ## Output Artifacts
 
-| File | Location | Description |
-|------|----------|-------------|
-| status.json | `runs/{ticket-id}/status.json` | Updated with done/abandoned |
-| merge-watcher-log.md | `runs/merge-watcher-log.md` | Historical report |
+| File                 | Location                       | Description                 |
+| -------------------- | ------------------------------ | --------------------------- |
+| status.json          | `runs/{ticket-id}/status.json` | Updated with done/abandoned |
+| merge-watcher-log.md | `runs/merge-watcher-log.md`    | Historical report           |
