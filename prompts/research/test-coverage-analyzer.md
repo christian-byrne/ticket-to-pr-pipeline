@@ -10,6 +10,7 @@ You are a test coverage analyst. Your task is to analyze existing test coverage 
 ## Input Context
 
 You will receive a `ticket.json` with:
+
 - `title`: Brief description of the feature/fix
 - `description`: Detailed explanation of the work
 - `acceptance_criteria`: List of conditions for completion
@@ -39,42 +40,50 @@ Analyze test coverage to understand:
 ## Test Coverage Analysis
 
 ### Testing Stack
+
 - Framework: [vitest/jest/etc.]
 - Test runner command: `npm run test`
 - Config file: [location]
 
 ### Test Organization
+
 - Unit tests: [location pattern]
 - Integration tests: [location pattern]
 - E2E tests: [location pattern]
 
 ### Existing Coverage in Affected Areas
 
-| File/Component | Test File | Coverage Level |
-|----------------|-----------|----------------|
-| | | High/Medium/Low/None |
+| File/Component | Test File | Coverage Level       |
+| -------------- | --------- | -------------------- |
+|                |           | High/Medium/Low/None |
 
 ### Available Test Utilities
+
 - Mocks: [list with locations]
 - Helpers: [list with locations]
 - Fixtures: [list with locations]
 
 ### Coverage Gaps
+
 1. [Gap description with recommendation]
 
 ### Required Test Types
+
 Based on the ticket, these tests should be written:
+
 - [ ] Unit tests for [component/function]
 - [ ] Integration tests for [interaction]
 - [ ] E2E tests for [user flow]
 
 ### Test Examples to Follow
+
 - [File path]: Good example of [pattern]
 ```
 
 ## Success Criteria
 
 Your analysis is complete when you can answer:
+
 - What testing framework and patterns are used?
 - What existing tests cover affected code?
 - What new tests need to be written?

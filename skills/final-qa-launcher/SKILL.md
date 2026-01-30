@@ -79,16 +79,21 @@ Load ticket.json and plan.md from the run directory. Create a checklist:
 # QA Checklist: {Ticket Title}
 
 ## Acceptance Criteria
+
 (from ticket.json)
+
 - [ ] {Criterion 1}
 - [ ] {Criterion 2}
 
 ## Implementation Verification
+
 (from plan.md)
+
 - [ ] {Feature 1} works as expected
 - [ ] {Feature 2} works as expected
 
 ## Standard Checks
+
 - [ ] No console errors in browser DevTools
 - [ ] No network errors in DevTools Network tab
 - [ ] Responsive: works on desktop width
@@ -99,12 +104,14 @@ Load ticket.json and plan.md from the run directory. Create a checklist:
 - [ ] No visual regressions in related areas
 
 ## Edge Cases
+
 - [ ] Empty state handled
 - [ ] Error state handled
 - [ ] Large data handled (if applicable)
 - [ ] Concurrent actions handled (if applicable)
 
 ## Integration
+
 - [ ] Feature works with rest of application
 - [ ] No breaks in related features
 ```
@@ -125,16 +132,19 @@ When complete:
 ### 7. Handle User Response
 
 **If "approved":**
+
 - Update `status.json`: set status to "pr-ready"
 - Prompt: "Ready to create PR. Continue?"
 
 **If "issue: {description}":**
+
 - Log the issue
 - Ask: "Fix now or note for later?"
 - If fix now: return to implementation mode
 - If note: add to known issues list in status.json
 
 **If "stop":**
+
 - Save current state
 - Output: "State saved. Resume with 'final-qa-launcher' skill."
 

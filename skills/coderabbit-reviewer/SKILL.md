@@ -33,6 +33,7 @@ gh pr view $PR_NUMBER --json comments --jq '.comments[] | select(.author.login =
 Typical wait time: 2-5 minutes for small PRs.
 
 To manually trigger a re-review:
+
 ```bash
 gh pr comment $PR_NUMBER --body "@coderabbitai review"
 ```
@@ -45,22 +46,25 @@ Extract actionable items from CodeRabbit's review:
 ## CodeRabbit Review Summary
 
 ### Critical Issues
+
 - [ ] {file:line} - {issue description}
 
-### Suggestions  
+### Suggestions
+
 - [ ] {file:line} - {suggestion}
 
 ### Nitpicks
+
 - [ ] {file:line} - {minor improvement}
 ```
 
 ### 4. Categorize by Severity
 
-| Category | Action Required | Auto-fixable |
-|----------|----------------|--------------|
-| Critical | Must fix before merge | Sometimes |
-| Suggestion | Should consider | Often |
-| Nitpick | Nice to have | Usually |
+| Category   | Action Required       | Auto-fixable |
+| ---------- | --------------------- | ------------ |
+| Critical   | Must fix before merge | Sometimes    |
+| Suggestion | Should consider       | Often        |
+| Nitpick    | Nice to have          | Usually      |
 
 ### 5. Present to User
 
@@ -127,10 +131,10 @@ jq '.coderabbitReview = {
 
 Trigger via PR comments:
 
-| Command | Purpose |
-|---------|---------|
-| `@coderabbitai review` | Full review |
-| `@coderabbitai summary` | Generate PR summary |
+| Command                 | Purpose               |
+| ----------------------- | --------------------- |
+| `@coderabbitai review`  | Full review           |
+| `@coderabbitai summary` | Generate PR summary   |
 | `@coderabbitai resolve` | Mark threads resolved |
 
 ## Integration with Pipeline
@@ -139,6 +143,7 @@ Trigger via PR comments:
 **After:** review-orchestrator (human review)
 
 Recommended flow:
+
 1. PR created → CodeRabbit auto-reviews
 2. Fix critical issues
 3. Human review with CodeRabbit context

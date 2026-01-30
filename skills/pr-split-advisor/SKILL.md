@@ -1,6 +1,6 @@
 ---
 name: pr-split-advisor
-description: "Analyzes implementation plans and recommends PR splitting strategy. Use after a plan.md is approved to determine single PR, vertical slices, or stacked PRs approach."
+description: 'Analyzes implementation plans and recommends PR splitting strategy. Use after a plan.md is approved to determine single PR, vertical slices, or stacked PRs approach.'
 ---
 
 # PR Split Advisor
@@ -34,12 +34,12 @@ cat runs/{ticket-id}/plan.md
 
 Calculate metrics:
 
-| Metric | How to Assess |
-|--------|---------------|
-| Total estimated LoC | Sum of all file estimates |
-| File count | Number of files affected |
-| Layer count | Distinct layers (component, store, util, type, test) |
-| Coupling | Can changes be tested independently? |
+| Metric              | How to Assess                                        |
+| ------------------- | ---------------------------------------------------- |
+| Total estimated LoC | Sum of all file estimates                            |
+| File count          | Number of files affected                             |
+| Layer count         | Distinct layers (component, store, util, type, test) |
+| Coupling            | Can changes be tested independently?                 |
 
 ### 3. Apply Decision Rules
 
@@ -68,6 +68,7 @@ Produce analysis in this format:
 # PR Split Analysis
 
 ## Scope Summary
+
 - **Estimated LoC:** {number}
 - **Files affected:** {count}
 - **Layers touched:** {list}
@@ -75,11 +76,13 @@ Produce analysis in this format:
 ## Recommendation: {Single PR / Vertical Slices / Stacked PRs}
 
 ### Rationale
+
 {Why this approach fits the change}
 
 ## Proposed Split
 
 ### PR 1: {Title}
+
 - **Scope:** {description}
 - **Files:**
   - `path/to/file1.ts`
@@ -88,6 +91,7 @@ Produce analysis in this format:
 - **Estimated LoC:** {number}
 
 ### PR 2: {Title}
+
 - **Scope:** {description}
 - **Files:**
   - `path/to/file3.ts`
@@ -109,7 +113,7 @@ Based on analysis, I recommend: {strategy}
 Options:
 A) Accept recommendation and set up {strategy}
 B) Use vertical slices instead
-C) Use stacked PRs instead  
+C) Use stacked PRs instead
 D) Keep as single PR
 
 Your choice:
@@ -120,6 +124,7 @@ Your choice:
 Based on chosen strategy:
 
 #### Single PR
+
 ```bash
 # No special setup needed
 # Continue on current feature branch
@@ -127,6 +132,7 @@ git checkout -b feat/{ticket-id}-{feature-name}
 ```
 
 #### Vertical Slices (Independent PRs)
+
 ```bash
 # Create separate worktrees for each PR
 wt-new {repo} pr1-{feature}
@@ -137,6 +143,7 @@ wt-multi-new {branch-prefix} {repo1} {repo2}
 ```
 
 #### Stacked PRs (Dependent Chain)
+
 ```bash
 # Check Graphite is installed
 which gt || npm install -g @withgraphite/graphite-cli
@@ -164,14 +171,17 @@ Add strategy section to `plan.md`:
 **Approach:** {Single PR / Vertical Slices / Stacked PRs}
 
 ### PRs
+
 1. **{PR 1 title}** - {files list}
 2. **{PR 2 title}** - {files list}
 
 ### Setup
+
 {Commands used}
 ```
 
 Update `status.json`:
+
 ```json
 {
   "stage": "pr-strategy",
@@ -193,19 +203,23 @@ Update `status.json`:
 ### Next Steps
 
 {For single PR:}
+
 1. Continue to task generation
 2. Implement tasks on branch: `{branch-name}`
 
 {For vertical slices:}
+
 1. Generate tasks for PR 1 first
 2. Complete PR 1, then generate tasks for PR 2
 3. PRs can be reviewed/merged independently
 
 Worktrees created:
+
 - `{path/to/pr1}` → PR 1
 - `{path/to/pr2}` → PR 2
 
 {For stacked PRs:}
+
 1. Generate all tasks
 2. Implement PR 1 changes first
 3. Run `gt create` to checkpoint
@@ -216,7 +230,9 @@ Worktrees created:
 ## Split Strategies
 
 ### Vertical Slices
+
 Best for completely independent changes:
+
 - Separate features
 - Unrelated bug fixes
 - Independent refactors
@@ -224,7 +240,9 @@ Best for completely independent changes:
 **Tools:** `wt-new`, `wt-multi-new` (git-worktree-utils)
 
 ### Stacked PRs
+
 Best for dependent changes:
+
 - Schema → API → UI flow
 - Types → Utils → Components
 - Base refactor → Feature implementation
@@ -232,6 +250,7 @@ Best for dependent changes:
 **Tools:** Graphite CLI (`gt create`, `gt submit`, `gt sync`)
 
 ### When to Keep Single
+
 - Under 200 LoC
 - Highly coupled changes that break if split
 - Simple, focused fixes

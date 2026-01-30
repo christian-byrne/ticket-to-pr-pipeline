@@ -1,6 +1,6 @@
 ---
 name: ticket-intake
-description: "Parse Notion ticket URL, extract all data, initialize pipeline run. Use when starting work on a new ticket or when asked to pick up a ticket."
+description: 'Parse Notion ticket URL, extract all data, initialize pipeline run. Use when starting work on a new ticket or when asked to pick up a ticket.'
 ---
 
 # Ticket Intake
@@ -50,17 +50,17 @@ Fetch the full page content including all properties
 
 Extract these properties (names may vary):
 
-| Property | Expected Name | Type |
-|----------|--------------|------|
-| Title | Name / Title | Title |
-| Status | Status | Select |
-| Assignee | Assignee / Assigned To | Person |
-| Description | - | Page content |
-| Slack Link | Slack Link / Slack Thread | URL |
-| GitHub PR | GitHub PR / PR Link | URL |
-| Priority | Priority | Select |
-| Area | Area / Category | Select |
-| Related Tasks | Related Tasks | Relation |
+| Property      | Expected Name             | Type         |
+| ------------- | ------------------------- | ------------ |
+| Title         | Name / Title              | Title        |
+| Status        | Status                    | Select       |
+| Assignee      | Assignee / Assigned To    | Person       |
+| Description   | -                         | Page content |
+| Slack Link    | Slack Link / Slack Thread | URL          |
+| GitHub PR     | GitHub PR / PR Link       | URL          |
+| Priority      | Priority                  | Select       |
+| Area          | Area / Category           | Select       |
+| Related Tasks | Related Tasks             | Relation     |
 
 **If properties are missing**: Note what's unavailable and continue with available data.
 
@@ -135,16 +135,19 @@ Use `Notion:notion-update-page` to update the ticket:
 ```
 
 **After the update succeeds**, log the write to `status.json`:
+
 ```json
 {
-  "notionWrites": [{
-    "field": "Status",
-    "value": "In Progress",
-    "previousValue": "Not Started",
-    "at": "2024-01-15T10:30:00Z",
-    "skill": "ticket-intake",
-    "success": true
-  }]
+  "notionWrites": [
+    {
+      "field": "Status",
+      "value": "In Progress",
+      "previousValue": "Not Started",
+      "at": "2024-01-15T10:30:00Z",
+      "skill": "ticket-intake",
+      "success": true
+    }
+  ]
 }
 ```
 
@@ -177,17 +180,21 @@ Print a clear summary:
 **Area:** UI
 
 ### Description
+
 [Brief description or first 200 chars]
 
 ### Acceptance Criteria
+
 - [ ] Criterion 1
 - [ ] Criterion 2
 
 ### Links
+
 - **Ticket:** [Notion link]
 - **Slack:** [Slack link] ← Copy thread content manually if needed
 
 ### Pipeline Run
+
 - **Directory:** $HOME/repos/ticket-to-pr-pipeline/runs/abc12345/
 - **Status:** Research phase initialized
 
@@ -247,15 +254,16 @@ The "Comfy Tasks" database has these properties (verify via `notion-search`):
 
 When assigning tickets, use these identifiers:
 
-| Platform | Identifier |
-|----------|------------|
-| Notion User ID | `175d872b-594c-81d4-ba5a-0002911c5966` |
-| Notion Name | Christian Byrne |
-| Notion Email | cbyrne@comfy.org |
-| Slack User ID | U087MJCDHHC |
-| GitHub Username | christian-byrne |
+| Platform        | Identifier                             |
+| --------------- | -------------------------------------- |
+| Notion User ID  | `175d872b-594c-81d4-ba5a-0002911c5966` |
+| Notion Name     | Christian Byrne                        |
+| Notion Email    | cbyrne@comfy.org                       |
+| Slack User ID   | U087MJCDHHC                            |
+| GitHub Username | christian-byrne                        |
 
 **To update Assignee**, use the Notion User ID (not name):
+
 ```
 properties: {"Assignee": "175d872b-594c-81d4-ba5a-0002911c5966"}
 ```
@@ -281,16 +289,19 @@ If a Slack link exists:
 ### Slack URL Conversion
 
 Notion stores Slack links in `slackMessage://` format:
+
 ```
 slackMessage://comfy-organization.slack.com/CHANNEL_ID/THREAD_TS/MESSAGE_TS
 ```
 
 Convert to browser-clickable format:
+
 ```
 https://comfy-organization.slack.com/archives/CHANNEL_ID/pMESSAGE_TS_NO_DOT
 ```
 
 **Example:**
+
 - Input: `slackMessage://comfy-organization.slack.com/C075ANWQ8KS/1766022478.450909/1764772881.854829`
 - Output: `https://comfy-organization.slack.com/archives/C075ANWQ8KS/p1764772881854829`
 

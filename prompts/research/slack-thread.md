@@ -39,6 +39,7 @@ Since Slack MCP access is limited, ask the human to:
 ## Slack Thread Analysis Report
 
 ### Summary
+
 - Thread participants: {{LIST}}
 - Key decision: {{SUMMARY}}
 - Open questions: {{LIST}}
@@ -46,6 +47,7 @@ Since Slack MCP access is limited, ask the human to:
 ### Thread Timeline
 
 #### Initial Request
+
 - **From:** @{{USER}}
 - **Date:** {{DATE}}
 - **Summary:** What was originally requested
@@ -53,37 +55,46 @@ Since Slack MCP access is limited, ask the human to:
 #### Key Discussions
 
 ##### Discussion Point 1
+
 - **Participants:** @{{USER1}}, @{{USER2}}
 - **Topic:** What was discussed
 - **Outcome:** What was decided or concluded
 
 ##### Discussion Point 2
+
 ...
 
 ### Decisions Made
+
 1. **Decision:** {{DESCRIPTION}}
    - **Rationale:** Why this was decided
    - **By:** Who made the decision
 
 ### Alternative Approaches Discussed
+
 - **Approach A:** Description
   - Pros: ...
   - Cons: ...
   - Why rejected: ...
 
 ### Open Questions
+
 - Questions that weren't resolved in the thread
 
 ### Action Items from Thread
+
 - [ ] Action item 1 (assigned to @{{USER}})
 - [ ] Action item 2
 
 ### People to Involve
+
 Based on the thread, consider involving:
+
 - @{{USER1}} - Reason (e.g., "proposed the approach")
 - @{{USER2}} - Reason (e.g., "raised concerns about X")
 
 ### Recommendations
+
 - Key context to carry forward
 - Constraints identified
 - Preferences expressed
