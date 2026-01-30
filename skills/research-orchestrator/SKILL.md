@@ -5,298 +5,134 @@ description: Orchestrates parallel research subagents to gather context for a ti
 
 # Research Orchestrator
 
-Dispatches parallel research subagents to gather comprehensive context for implementing a ticket, then compiles findings into a research report.
+Dispatches parallel research subagents, compiles findings into research report.
 
 ## Prerequisites
 
-- `ticket-intake` completed - `runs/{ticket-id}/ticket.json` exists
-- `gh` CLI authenticated for GitHub research
-- Notion MCP connected (for related pages research)
-
-## Quick Start
-
-1. Load ticket data from run directory
-2. Determine which research areas to dispatch
-3. Prepare and dispatch subagents in parallel
-4. Compile results into research report
-5. Update status and prompt for human review
+- `runs/{ticket-id}/ticket.json` exists (from ticket-intake)
+- `gh` CLI authenticated
+- Notion MCP connected (for related pages)
 
 ## Workflow
 
-### Step 1: Load Ticket Data
+### 1. Load Ticket Data
 
-Read `ticket.json` from the current run directory:
+From `runs/{ticket-id}/ticket.json` extract: title, description, slackLink, relatedTasks, area.
+Generate keywords from title/description for search queries.
 
-```
-/home/cbyrne/repos/ticket-to-pr-pipeline/runs/{ticket-id}/ticket.json
-```
-
-Extract:
-- `title` - Ticket title
-- `description` - Full description
-- `slackLink` - Slack thread URL (if present)
-- `relatedTasks` - Linked Notion pages (if present)
-- `area` - Category/area
-
-Generate keywords from title and description for search queries.
-
-### Step 2: Determine Research Scope
+### 2. Determine Research Scope
 
 **Always dispatch:**
 - `git-history` - Commits, blame, file history
 - `github-prs-issues` - Related PRs and issues
 - `codebase-analysis` - Patterns and affected files
 
-**Conditional dispatch:**
-- `notion-related` → Only if `relatedTasks` has entries or linked pages exist
-- `slack-thread` → Only if `slackLink` exists
-- `external-research` → Only if new patterns/libraries/technologies involved
+**Conditional:**
+- `notion-related` → If `relatedTasks` has entries
+- `slack-thread` → If `slackLink` exists
+- `external-research` → If new patterns/libraries involved
 
-### Step 3: Handle Slack Content
+### 3. Handle Slack Content
 
-If `slackLink` exists in ticket.json, prompt the user:
-
+If `slackLink` exists:
 ```
-📋 This ticket has a linked Slack thread:
-   {slackLink}
-
-Please copy and paste the thread content, or type "skip" to continue without it.
+📋 This ticket has a linked Slack thread: {slackLink}
+Please paste the thread content, or type "skip".
 ```
 
-Wait for user input before proceeding.
+### 4. Dispatch Subagents
 
-### Step 4: Dispatch Subagents
+**Target repo:** `/home/cbyrne/cross-repo-tasks/ticket-to-pr-e2e-agent-pipeline/ComfyUI_frontend`
+**Prompt templates:** `/home/cbyrne/repos/ticket-to-pr-pipeline/prompts/research/`
 
-Use Task tool to dispatch each research area in parallel.
+Template variables: `{{TICKET_TITLE}}`, `{{TICKET_DESCRIPTION}}`, `{{KEYWORDS}}`, `{{AFFECTED_FILES}}`
 
-**Target repository:**
-```
-/home/cbyrne/cross-repo-tasks/ticket-to-pr-e2e-agent-pipeline/ComfyUI_frontend
-```
+### 5. Compile Research Report
 
-**Prompt templates location:**
-```
-/home/cbyrne/repos/ticket-to-pr-pipeline/prompts/research/
-```
-
-**Template variables to fill:**
-- `{{TICKET_TITLE}}` - From ticket.json
-- `{{TICKET_DESCRIPTION}}` - From ticket.json
-- `{{KEYWORDS}}` - Extracted from title/description
-- `{{AFFECTED_FILES}}` - Estimated from description or "TBD"
-
-**Subagent task format:**
-
-```
-You are a research subagent for the ticket-to-PR pipeline.
-
-TICKET: {title}
-DESCRIPTION: {description}
-KEYWORDS: {keywords}
-AFFECTED FILES: {affected_files}
-
-YOUR TASK: {content from prompt template}
-
-REPOSITORY: /home/cbyrne/cross-repo-tasks/ticket-to-pr-e2e-agent-pipeline/ComfyUI_frontend
-
-OUTPUT FORMAT: {format section from prompt template}
-
-When complete, return your findings in the specified format. Be thorough but concise.
-```
-
-### Step 5: Compile Research Report
-
-Wait for all subagents to complete. If a subagent fails, note the failure but continue with others.
-
-Create `research-report.md` in the run directory:
+Create `research-report.md`:
 
 ```markdown
 # Research Report: {Ticket Title}
 
-**Ticket ID:** {id}
-**Generated:** {timestamp}
+**Ticket ID:** {id} | **Generated:** {timestamp}
 
 ## Summary
-
-- **Key findings:** [overview of most important discoveries]
-- **Affected files:** [list of files identified]
-- **Recommended reviewers:** [based on git blame/PR history]
-- **Risk areas:** [potential challenges identified]
+- **Key findings:** {overview}
+- **Affected files:** {list}
+- **Recommended reviewers:** {based on git blame}
+- **Risk areas:** {potential challenges}
 
 ## Git History Findings
-
-{git-history subagent output}
+{output}
 
 ## GitHub PRs & Issues
-
-{github-prs-issues subagent output}
+{output}
 
 ## Codebase Analysis
-
-{codebase-analysis subagent output}
+{output}
 
 ## External Research
-
-{external-research subagent output if dispatched, otherwise "Not applicable - no new patterns/libraries involved"}
+{output or "N/A"}
 
 ## Slack Context
-
-{slack-thread subagent output if dispatched, otherwise "Not applicable - no Slack thread linked"}
+{output or "N/A"}
 
 ## Notion Related Pages
-
-{notion-related subagent output if dispatched, otherwise "Not applicable - no related pages linked"}
+{output or "N/A"}
 
 ## Research Failures
-
-{List any subagents that failed and why, or "None - all research completed successfully"}
+{failures or "None"}
 
 ## Next Steps
-
-Based on this research, recommended approach for planning phase:
-1. {recommendation 1}
-2. {recommendation 2}
-3. {recommendation 3}
+1. {recommendation}
+2. {recommendation}
 ```
 
-### Step 6: Update Status
-
-Update `status.json` in run directory:
+### 6. Update Status
 
 ```json
-{
-  "status": "planning",
-  "lastUpdated": "{timestamp}",
-  "researchCompletedAt": "{timestamp}"
-}
+{"status": "planning", "lastUpdated": "{timestamp}", "researchCompletedAt": "{timestamp}"}
 ```
 
-### Step 7: Output Summary
-
-Print summary for human:
+### 7. Output Summary
 
 ```markdown
 ## Research Complete
 
 **Ticket:** {title}
-**Research Report:** {path to research-report.md}
+**Report:** {path}
 
-### Findings Summary
-- {key finding 1}
-- {key finding 2}
-- {key finding 3}
+### Key Findings
+- {finding 1}
+- {finding 2}
 
-### Affected Files Identified
+### Affected Files
 - {file 1}
-- {file 2}
-
-### Recommended Reviewers
-- @{reviewer1} - {reason}
-- @{reviewer2} - {reason}
 
 ---
-
 📋 **Human Review Required**
-
-Please review the research report before continuing:
-{path to research-report.md}
-
-When ready, load the `plan-generator` skill to begin planning.
+Review research report before continuing. When ready, load `plan-generator`.
 ```
 
-## Subagent Dispatch Reference
+## Subagent Reference
 
-### git-history Subagent
-
-Searches commits, blame, file history for relevant context.
-
-Key tasks:
-- Recent commits (90 days) touching affected files or keywords
-- File history and blame for ownership
-- Patterns from similar changes
-
-### github-prs-issues Subagent
-
-Searches GitHub for related PRs and issues.
-
-Key tasks:
-- Open PRs that might conflict
-- Merged PRs with relevant patterns
-- Issues with useful context
-- Review patterns from similar PRs
-
-Uses `gh` CLI commands.
-
-### codebase-analysis Subagent
-
-Analyzes ComfyUI_frontend codebase structure.
-
-Key tasks:
-- Identify affected files
-- Understand existing patterns
-- Check AGENTS.md guidelines
-- Find related code patterns
-- Map dependencies
-
-### external-research Subagent
-
-Researches external sources for best practices.
-
-Only dispatch when:
-- New library/dependency introduced
-- Complex pattern needing research
-- UI/UX best practices needed
-- Performance optimization required
-
-Sources: Vue 3, VueUse, Tailwind, reka-ui, ComfyUI docs
-
-### notion-related Subagent
-
-Researches linked Notion pages and related tasks.
-
-Requires Notion MCP. Fallback: ask human to copy content.
-
-### slack-thread Subagent
-
-Extracts context from linked Slack thread.
-
-Currently manual: ask human to paste thread content.
+| Subagent | Purpose |
+|----------|---------|
+| git-history | Recent commits, blame, file ownership |
+| github-prs-issues | Related PRs, issues, review patterns (uses `gh` CLI) |
+| codebase-analysis | Affected files, patterns, AGENTS.md guidelines |
+| external-research | Vue 3, VueUse, Tailwind, reka-ui docs (only when needed) |
+| notion-related | Linked Notion pages (requires MCP) |
+| slack-thread | Thread content (manual paste) |
 
 ## Error Handling
 
-### Subagent Failure
-
-```
-⚠️ {subagent-name} research failed:
-{error message}
-
-Continuing with remaining research...
-```
-
-Note failure in research report but don't block other subagents.
-
-### Missing ticket.json
-
-```
-❌ ticket.json not found in run directory.
-
-Expected location: /home/cbyrne/repos/ticket-to-pr-pipeline/runs/{ticket-id}/ticket.json
-
-Please run ticket-intake first.
-```
-
-### No Dispatch Possible
-
-If no subagents can be dispatched:
-
-```
-❌ Unable to dispatch any research subagents.
-Check prerequisites and run directory setup.
-```
+**Subagent failure:** Note in report, continue with others.
+**Missing ticket.json:** Stop, instruct to run ticket-intake first.
+**No dispatch possible:** Check prerequisites and run directory.
 
 ## Notes
 
 - Focus on actionable context, not exhaustive documentation
-- Human checkpoint after research is critical - do not auto-continue to planning
-- Failed subagents should not block the overall process
-- Research report should be comprehensive but scannable
+- Human checkpoint after research is critical—do not auto-continue
+- Failed subagents should not block overall process
