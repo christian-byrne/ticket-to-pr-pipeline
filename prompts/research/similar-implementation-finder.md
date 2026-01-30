@@ -60,7 +60,7 @@ Find similar existing implementations:
 
 - **Lessons**: [What to learn from this implementation]
 
-#### 2. [Feature Name]
+### 2. [Feature Name]
 
 ...
 

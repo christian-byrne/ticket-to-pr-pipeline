@@ -66,7 +66,7 @@ Files likely to be modified:
 - **Severity**: Critical/High/Medium/Low
 - **Mitigation**: [How to handle]
 
-#### 2. [Change Description]
+### 2. [Change Description]
 
 ...
 

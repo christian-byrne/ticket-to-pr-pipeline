@@ -105,7 +105,7 @@ grep -r "import.*from.*{{MODULE}}" src/
 ```
 ````
 
-#### State Management Pattern
+### State Management Pattern
 
 ```typescript
 // Example of how state is managed

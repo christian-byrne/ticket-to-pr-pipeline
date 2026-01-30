@@ -64,6 +64,7 @@ NOTION_DATABASE=Comfy Tasks
    ```
 
 4. **Offer options:**
+
    ```
    Options:
    A) Sync all to Notion
@@ -121,6 +122,7 @@ Update Notion with current pipeline status.
    ```
 
 6. **Report results:**
+
    ```
    Synced {X} runs to Notion:
    - {Ticket 1}: Status → In Progress ✅
@@ -202,6 +204,7 @@ Clean up completed runs.
    ```
 
 4. **Report:**
+
    ```
    Archived {X} completed runs.
    ```
@@ -275,6 +278,7 @@ Check for merged PRs and update Notion status to Done. This handles the common c
    ```
 
 5. **Report:**
+
    ```
    Checked {X} open PRs:
    - ABC-123: PR #456 merged ✅ → Notion updated to Done

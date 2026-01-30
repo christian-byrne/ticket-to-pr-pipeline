@@ -193,7 +193,7 @@ gt sync --restack
 **Before:** pr-split-advisor (recommends stacked)
 **After:** pr-creator (for each PR via gt submit)
 
-Use Graphite's dashboard at https://app.graphite.dev for stack visualization.
+Use Graphite's dashboard at <https://app.graphite.dev> for stack visualization.
 
 ## Output Artifacts
 

@@ -340,10 +340,12 @@ await Promise.all(tasks.filter((t) => !t.skip).map(dispatchSubagent))
 **Steps:**
 
 1. Use tmux to start dev server:
+
    ```bash
    tmux new-window -n "dev-server" -d
    tmux send-keys -t "dev-server" "cd ComfyUI_frontend && pnpm dev:cloud" C-m
    ```
+
 2. Wait for server ready
 3. Print URL: `http://localhost:5173`
 4. Generate QA checklist from acceptance criteria
