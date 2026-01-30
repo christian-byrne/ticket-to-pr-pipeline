@@ -83,7 +83,7 @@ Return findings with severity (Critical/Major/Minor), location (file:line), and 
 
 **Subagent 3: Pattern Compliance Review**
 ```
-Check code against ComfyUI_frontend patterns and AGENTS.md guidelines.
+Check code against target repository patterns and AGENTS.md guidelines.
 
 Files to review: {FILES_LIST}
 

@@ -49,9 +49,9 @@ If TDD recommended, research the codebase:
 # Find similar tests
 find src -name "*.test.ts" | xargs grep -l "{relevant-keyword}" | head -5
 
-# Read testing docs
-cat ComfyUI_frontend/docs/testing/README.md
-cat ComfyUI_frontend/docs/testing/unit-testing.md
+# Read testing docs (if available)
+cat docs/testing/README.md 2>/dev/null || echo "No testing README found"
+cat docs/testing/unit-testing.md 2>/dev/null || echo "No unit testing docs found"
 ```
 
 Identify:
@@ -137,51 +137,24 @@ After user decision:
 - If TDD: Print the first test to write with full code skeleton
 - Prompt to continue to implementation
 
-## ComfyUI Frontend Testing Reference
+## Testing Reference
 
-### Test Structure
+Check the target repository's AGENTS.md or testing documentation for project-specific patterns.
+
+### Common Test Structure
 - **Unit tests:** Colocated `*.test.ts` files
-- **Component tests:** `MyComponent.test.ts` next to `MyComponent.vue`
+- **Component tests:** `MyComponent.test.ts` next to component file
 - **Store tests:** `src/stores/*.test.ts`
-- **E2E tests:** `browser_tests/**/*.spec.ts`
+- **E2E tests:** `tests/**/*.spec.ts` or `e2e/**/*.spec.ts`
 
-### Commands
+### Common Commands
 ```bash
 pnpm test:unit                          # Run all unit tests
 pnpm test:unit -- src/path/file.test.ts # Run specific test
 pnpm test:unit -- --watch               # Watch mode
 ```
 
-### Key Patterns
-
-**Mocking API:**
-```typescript
-vi.mock('@/scripts/api', () => ({
-  api: {
-    subscribeLogs: vi.fn(),
-    addEventListener: vi.fn()
-  }
-}))
-```
-
-**Testing reactivity:**
-```typescript
-import { nextTick } from 'vue'
-// After state change
-await nextTick()
-expect(logs.value).toEqual(['message'])
-```
-
-**Mocking composables:**
-```typescript
-vi.mock('@/path/to/composable', () => {
-  const doSomething = vi.fn()
-  const isLoading = ref(false)
-  return {
-    useMyComposable: () => ({ doSomething, isLoading })
-  }
-})
-```
+Check AGENTS.md or package.json for project-specific test commands.
 
 ### Testing Principles
 - No change detector tests

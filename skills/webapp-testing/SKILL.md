@@ -9,7 +9,7 @@ Automated visual verification of frontend changes using Playwright. Takes screen
 
 ## Prerequisites
 
-- ComfyUI_frontend dev server running (`pnpm dev` or `pnpm dev:cloud`)
+- Target repository dev server running (e.g., `pnpm dev`)
 - Playwright installed: `pnpm exec playwright install chromium`
 
 ## Workflow
@@ -19,8 +19,11 @@ Automated visual verification of frontend changes using Playwright. Takes screen
 Use tmux to run server in background:
 
 ```bash
-tmux new-session -d -s comfy-dev "cd /home/cbyrne/cross-repo-tasks/ticket-to-pr-e2e-agent-pipeline/ComfyUI_frontend && pnpm dev"
+# Navigate to your target repository and start dev server
+tmux new-session -d -s dev-server "cd $TARGET_REPO && pnpm dev"
 ```
+
+Where `TARGET_REPO` is the repository being tested (from ticket.json or current working directory).
 
 Wait for server ready:
 ```bash
@@ -146,7 +149,7 @@ echo "$REPORT" > "$RUN_DIR/visual-verification.md"
 ### 6. Cleanup
 
 ```bash
-tmux kill-session -t comfy-dev
+tmux kill-session -t dev-server
 ```
 
 ## Quick Checks

@@ -69,7 +69,7 @@ Extract these properties (names may vary):
 Create directory structure at:
 
 ```
-/home/cbyrne/repos/ticket-to-pr-pipeline/runs/{ticket-id}/
+$HOME/repos/ticket-to-pr-pipeline/runs/{ticket-id}/
 ├── status.json          # Current pipeline status
 ├── ticket.json          # Extracted ticket data
 ├── research-report.md   # (created later)
@@ -116,7 +116,7 @@ Create directory structure at:
 
 **⚠️ DO NOT SKIP THIS STEP. This is a required action, not optional.**
 
-**⚠️ Follow [Notion Write Safety](/home/cbyrne/repos/ticket-to-pr-pipeline/docs/notion-write-safety.md) rules.**
+**⚠️ Follow [Notion Write Safety](docs/notion-write-safety.md) rules.**
 
 Use `Notion:notion-update-page` to update the ticket:
 
@@ -188,7 +188,7 @@ Print a clear summary:
 - **Slack:** [Slack link] ← Copy thread content manually if needed
 
 ### Pipeline Run
-- **Directory:** /home/cbyrne/repos/ticket-to-pr-pipeline/runs/abc12345/
+- **Directory:** $HOME/repos/ticket-to-pr-pipeline/runs/abc12345/
 - **Status:** Research phase initialized
 
 ---
@@ -237,7 +237,7 @@ Proceeding with available data...
 
 ## Database Reference: Comfy Tasks
 
-The "Comfy Tasks" database may have these properties (verify via `notion-search`):
+The "Comfy Tasks" database has these properties (verify via `notion-search`):
 
 - **Status values**: Not Started, In Progress, In Review, Done
 - **Team assignment**: "Frontend Team" for unassigned tickets

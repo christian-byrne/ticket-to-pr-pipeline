@@ -28,7 +28,7 @@ Dispatches parallel research subagents to gather comprehensive context for imple
 Read `ticket.json` from the current run directory:
 
 ```
-/home/cbyrne/repos/ticket-to-pr-pipeline/runs/{ticket-id}/ticket.json
+$HOME/repos/ticket-to-pr-pipeline/runs/{ticket-id}/ticket.json
 ```
 
 Extract:
@@ -70,13 +70,11 @@ Wait for user input before proceeding.
 Use Task tool to dispatch each research area in parallel.
 
 **Target repository:**
-```
-/home/cbyrne/cross-repo-tasks/ticket-to-pr-e2e-agent-pipeline/ComfyUI_frontend
-```
+The repository being worked on. Read from `ticket.json` or the current working directory.
 
 **Prompt templates location:**
 ```
-/home/cbyrne/repos/ticket-to-pr-pipeline/prompts/research/
+$HOME/repos/ticket-to-pr-pipeline/prompts/research/
 ```
 
 **Template variables to fill:**
@@ -95,9 +93,9 @@ DESCRIPTION: {description}
 KEYWORDS: {keywords}
 AFFECTED FILES: {affected_files}
 
-YOUR TASK: {content from prompt template}
+YOUR TASK: {content from prompt template or inline task description}
 
-REPOSITORY: /home/cbyrne/cross-repo-tasks/ticket-to-pr-e2e-agent-pipeline/ComfyUI_frontend
+REPOSITORY: {target repository path from ticket.json or current working directory}
 
 OUTPUT FORMAT: {format section from prompt template}
 
@@ -229,7 +227,7 @@ Uses `gh` CLI commands.
 
 ### codebase-analysis Subagent
 
-Analyzes ComfyUI_frontend codebase structure.
+Analyzes target repository codebase structure.
 
 Key tasks:
 - Identify affected files
@@ -248,7 +246,7 @@ Only dispatch when:
 - UI/UX best practices needed
 - Performance optimization required
 
-Sources: Vue 3, VueUse, Tailwind, reka-ui, ComfyUI docs
+Sources: Relevant framework documentation, library docs, project-specific resources
 
 ### notion-related Subagent
 
@@ -280,7 +278,7 @@ Note failure in research report but don't block other subagents.
 ```
 ❌ ticket.json not found in run directory.
 
-Expected location: /home/cbyrne/repos/ticket-to-pr-pipeline/runs/{ticket-id}/ticket.json
+Expected location: $HOME/repos/ticket-to-pr-pipeline/runs/{ticket-id}/ticket.json
 
 Please run ticket-intake first.
 ```
