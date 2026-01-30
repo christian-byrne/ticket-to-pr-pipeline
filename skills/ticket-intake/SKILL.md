@@ -112,21 +112,29 @@ Create directory structure at:
 }
 ```
 
-### Step 5: Update Notion Ticket
+### Step 5: Update Notion Ticket (REQUIRED)
+
+**⚠️ DO NOT SKIP THIS STEP. This is a required action, not optional.**
 
 **⚠️ Follow [Notion Write Safety](/home/cbyrne/repos/ticket-to-pr-pipeline/docs/notion-write-safety.md) rules.**
 
 Use `Notion:notion-update-page` to update the ticket:
 
 1. **Status**: Set to "In Progress" (only valid from "Not Started")
-2. **Assignee**: Assign to current user (if not already assigned)
+2. **Assignee**: Assign to pipeline owner (Notion ID: `175d872b-594c-81d4-ba5a-0002911c5966`)
 
-**Pre-write validation:**
-- Verify page ID exists in ticket.json
-- Confirm transition Not Started → In Progress is valid
-- Prepare log entry for status.json
+```json
+{
+  "page_id": "{page_id_from_ticket}",
+  "command": "update_properties",
+  "properties": {
+    "Status": "In Progress",
+    "Assignee": "175d872b-594c-81d4-ba5a-0002911c5966"
+  }
+}
+```
 
-**Log the write** to `status.json`:
+**After the update succeeds**, log the write to `status.json`:
 ```json
 {
   "notionWrites": [{
@@ -140,9 +148,22 @@ Use `Notion:notion-update-page` to update the ticket:
 }
 ```
 
-If update fails, log with `success: false` and continue - this is not blocking.
+If update fails, log with `success: false` and continue.
 
-### Step 6: Output Summary
+### Step 6: Verify Completion
+
+**Before outputting summary, confirm:**
+
+- [ ] Run directory created at `runs/{ticket-id}/`
+- [ ] `ticket.json` saved with extracted data
+- [ ] `status.json` initialized
+- [ ] **Notion Status updated to "In Progress"**
+- [ ] **Notion Assignee set to pipeline owner**
+- [ ] `notionWrites` array in status.json has entries
+
+If any Notion updates were skipped, go back and complete Step 5 now.
+
+### Step 7: Output Summary
 
 Print a clear summary:
 
