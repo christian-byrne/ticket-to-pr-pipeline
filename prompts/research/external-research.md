@@ -27,37 +27,37 @@ Only dispatch this subagent when:
 
 ### 1. Vue 3 Documentation
 
-- https://vuejs.org/api/
+- <https://vuejs.org/api/>
 - Composition API patterns
 - Reactivity system
 
 ### 2. VueUse Functions
 
-- https://vueuse.org/functions.html
+- <https://vueuse.org/functions.html>
 - Performance-enhancing composables
 - Utility functions
 
 ### 3. Tailwind CSS
 
-- https://tailwindcss.com/docs/
+- <https://tailwindcss.com/docs/>
 - Utility class patterns
 - Responsive design
 
 ### 4. UI Component Libraries
 
-- https://reka-ui.com/ (preferred)
-- https://www.shadcn-vue.com/
-- https://primevue.org (avoid new usage)
+- <https://reka-ui.com/> (preferred)
+- <https://www.shadcn-vue.com/>
+- <https://primevue.org> (avoid new usage)
 
 ### 5. ComfyUI Documentation
 
-- https://docs.comfy.org
-- https://deepwiki.com/Comfy-Org/ComfyUI_frontend
+- <https://docs.comfy.org>
+- <https://deepwiki.com/Comfy-Org/ComfyUI_frontend>
 - Node behavior and API
 
 ### 6. Testing Best Practices
 
-- https://martinfowler.com/articles/practical-test-pyramid.html
+- <https://martinfowler.com/articles/practical-test-pyramid.html>
 - Playwright best practices
 - Vue Test Utils
 

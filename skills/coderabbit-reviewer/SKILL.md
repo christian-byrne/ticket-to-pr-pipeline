@@ -33,6 +33,7 @@ gh pr view $PR_NUMBER --json comments --jq '.comments[] | select(.author.login =
 Typical wait time: 2-5 minutes for small PRs.
 
 To manually trigger a re-review:
+
 ```bash
 gh pr comment $PR_NUMBER --body "@coderabbitai review"
 ```
@@ -139,6 +140,7 @@ Trigger via PR comments:
 **After:** review-orchestrator (human review)
 
 Recommended flow:
+
 1. PR created → CodeRabbit auto-reviews
 2. Fix critical issues
 3. Human review with CodeRabbit context
