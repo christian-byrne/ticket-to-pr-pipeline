@@ -49,6 +49,7 @@ If rebase selected: `git rebase origin/main`
 ### 3. Determine Commit Prefix
 
 From changes, select one:
+
 - New feature → `feat:`
 - Bug fix → `fix:`
 - Tests only → `test:`
@@ -58,6 +59,7 @@ From changes, select one:
 ### 4. Generate PR Title
 
 Format: `{prefix}: {concise description}`
+
 - Max ~60 characters
 - No period at end
 - Lowercase after prefix
@@ -87,11 +89,13 @@ Remove Breaking/Dependencies sections if not applicable. Keep it SHORT.
 ### 6. Determine Labels
 
 Get changed files:
+
 ```bash
 git diff --name-only origin/main...HEAD
 ```
 
 Map to `area:*` labels:
+
 - `src/components/` → `area:components`
 - `src/stores/` → `area:stores`
 - `src/composables/` → `area:composables`
@@ -127,20 +131,37 @@ gh pr create \
 **⚠️ Follow [Notion Write Safety](docs/notion-write-safety.md) rules.**
 
 Using Notion MCP:
+
 - Add PR URL to ticket's "GitHub PR" property
 - Update Status → "In Review" (only valid from "In Progress")
 
 **Pre-write validation:**
+
 - Verify page ID exists in ticket.json
 - Validate PR URL matches `^https://github\.com/[^/]+/[^/]+/pull/\d+$`
 - Confirm transition In Progress → In Review is valid
 
 **Log each write** to `status.json`:
+
 ```json
 {
   "notionWrites": [
-    {"field": "GitHub PR", "value": "{url}", "previousValue": null, "at": "...", "skill": "pr-creator", "success": true},
-    {"field": "Status", "value": "In Review", "previousValue": "In Progress", "at": "...", "skill": "pr-creator", "success": true}
+    {
+      "field": "GitHub PR",
+      "value": "{url}",
+      "previousValue": null,
+      "at": "...",
+      "skill": "pr-creator",
+      "success": true
+    },
+    {
+      "field": "Status",
+      "value": "In Review",
+      "previousValue": "In Progress",
+      "at": "...",
+      "skill": "pr-creator",
+      "success": true
+    }
   ]
 }
 ```
@@ -192,6 +213,7 @@ If user chooses to wait, invoke ci-checker skill automatically.
 ### 12. Save State
 
 Update `status.json`:
+
 ```json
 {
   "status": "pr-created",

@@ -29,11 +29,13 @@ cat "$RUN_DIR/research-report.md"
 ```
 
 Extract from ticket.json:
+
 - Title and description
 - Acceptance criteria
 - Affected files/areas
 
 Extract from research-report.md:
+
 - Recommended patterns
 - Similar implementations found
 - Risks identified
@@ -47,15 +49,19 @@ Create the plan following this structure:
 # Implementation Plan: {Ticket Title}
 
 ## Goal
+
 One sentence describing what we're building and why.
 
 ## Proposed Approach
+
 High-level description of the solution (2-3 paragraphs max).
 
 ## Decision Points
 
 ### Decision 1: {Title}
+
 **Options:**
+
 - **Option A:** {description}
   - Pros: ...
   - Cons: ...
@@ -70,42 +76,50 @@ High-level description of the solution (2-3 paragraphs max).
 ### Decision 2: ...
 
 ## Architecture Overview
+
 How the solution fits into the existing codebase. Reference patterns from research.
 
 ## Files to Modify
+
 - `path/to/file.ts` - {what changes}
 - `path/to/other.vue` - {what changes}
 
 ## Files to Create
+
 - `path/to/new.ts` - {purpose}
 
 ## Risks & Mitigations
 
-| Risk | Likelihood | Impact | Mitigation |
-|------|------------|--------|------------|
+| Risk   | Likelihood   | Impact       | Mitigation       |
+| ------ | ------------ | ------------ | ---------------- |
 | {risk} | Low/Med/High | Low/Med/High | {how to address} |
 
 ## Dependencies
+
 - External libraries needed (if any)
 - Other PRs that need to merge first
 - Backend changes required
 
 ## Testing Strategy
+
 - Unit tests needed
 - E2E tests needed
 - Manual testing approach
 
 ## Estimated Scope
+
 - Lines of code: ~{estimate}
 - Complexity: Low/Medium/High
 - PR split recommendation: Single/Vertical/Stacked
 
 ## Open Questions
+
 - Questions that need answers before implementation
 
 ---
-*Revision: 1*
-*Generated: {timestamp}*
+
+_Revision: 1_
+_Generated: {timestamp}_
 ```
 
 ### 3. Save Plan
@@ -139,17 +153,20 @@ Your response:
 ### 5. Handle Feedback
 
 **If feedback provided:**
+
 - Revise the plan addressing the feedback
 - Increment revision number
 - Append revision history to the plan
 - Re-present for review
 
 **If more research requested:**
+
 - Note which areas need research
 - Update status to "research-needed"
 - Return to research-orchestrator
 
 **If approved:**
+
 - Update status.json: `status → "tasking"`
 - Prompt to continue to task generation
 
@@ -169,6 +186,7 @@ Decision points are critical. For each significant choice:
 4. **Define pivot triggers** - When would we switch?
 
 Examples of decision points:
+
 - Which component pattern to use (composable vs. store vs. props)
 - Where to place new code (new file vs. extend existing)
 - API design choices
@@ -184,6 +202,7 @@ When estimating scope:
 - **Large (500+ LOC)**: Consider splitting into multiple PRs
 
 If scope suggests splitting, recommend:
+
 - **Vertical slices**: Each PR delivers working feature subset
 - **Stacked PRs**: Layered changes building on each other
 
@@ -197,17 +216,19 @@ When revising, append to the plan:
 ## Revision History
 
 ### Revision 2 - {timestamp}
+
 **Feedback:** {summary of feedback}
 **Changes:**
+
 - Changed X to Y because...
 - Added consideration for Z...
 ```
 
 ## Output Artifacts
 
-| File | Location | Description |
-|------|----------|-------------|
-| plan.md | `runs/{ticket-id}/plan.md` | The implementation plan |
+| File        | Location                       | Description                  |
+| ----------- | ------------------------------ | ---------------------------- |
+| plan.md     | `runs/{ticket-id}/plan.md`     | The implementation plan      |
 | status.json | `runs/{ticket-id}/status.json` | Updated with planning status |
 
 ## Next Step

@@ -33,6 +33,7 @@ find . -name "*.test.ts" | xargs grep -l "{{KEYWORD}}"
 ### 2. Understand Existing Patterns
 
 For each affected file, understand:
+
 - Component structure (if Vue)
 - State management approach
 - API interactions
@@ -41,6 +42,7 @@ For each affected file, understand:
 ### 3. Check AGENTS.md Guidelines
 
 Read the AGENTS.md file for:
+
 - Coding standards
 - Naming conventions
 - Testing requirements
@@ -75,10 +77,11 @@ grep -r "import.*from.*{{MODULE}}" src/
 
 ## Output Format
 
-```markdown
+````markdown
 ## Codebase Analysis Report
 
 ### Summary
+
 - X files will need modification
 - Primary areas: {{AREAS}}
 - Established patterns identified: {{PATTERNS}}
@@ -86,6 +89,7 @@ grep -r "import.*from.*{{MODULE}}" src/
 ### Affected Files
 
 #### {{FILE_PATH}}
+
 - **Type:** Component/Composable/Store/Utility
 - **Purpose:** What this file does
 - **Key Dependencies:** What it imports/uses
@@ -95,16 +99,20 @@ grep -r "import.*from.*{{MODULE}}" src/
 ### Established Patterns
 
 #### Component Pattern
+
 ```typescript
 // Example of how similar components are structured
 ```
+````
 
 #### State Management Pattern
+
 ```typescript
 // Example of how state is managed
 ```
 
 #### API Interaction Pattern
+
 ```typescript
 // Example of how API calls are made
 ```
@@ -114,6 +122,7 @@ grep -r "import.*from.*{{MODULE}}" src/
 - Unit tests location: {{PATH}}
 - Test framework: Vitest
 - Example test structure:
+
 ```typescript
 // Example test pattern
 ```
@@ -132,6 +141,7 @@ grep -r "import.*from.*{{MODULE}}" src/
 2. **Patterns to Follow:** Which existing code to mimic
 3. **Testing Approach:** How to test the changes
 4. **Potential Pitfalls:** Things to avoid based on codebase patterns
+
 ```
 
 ## Success Criteria
@@ -140,3 +150,4 @@ grep -r "import.*from.*{{MODULE}}" src/
 - Found similar code patterns to follow
 - Understood testing approach
 - Compiled relevant coding standards
+```

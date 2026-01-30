@@ -73,6 +73,7 @@ gh pr view {{PR_NUMBER}} --comments
 ## GitHub PRs & Issues Research Report
 
 ### Summary
+
 - X open PRs potentially related
 - X merged PRs with relevant patterns
 - X issues with useful context
@@ -80,6 +81,7 @@ gh pr view {{PR_NUMBER}} --comments
 ### Related Open PRs
 
 #### PR #{{NUMBER}}: {{TITLE}}
+
 - **Author:** @{{AUTHOR}}
 - **Status:** {{STATUS}}
 - **Files:** {{FILES}}
@@ -89,6 +91,7 @@ gh pr view {{PR_NUMBER}} --comments
 ### Relevant Merged PRs
 
 #### PR #{{NUMBER}}: {{TITLE}}
+
 - **Author:** @{{AUTHOR}}
 - **Merged:** {{DATE}}
 - **Files:** {{FILES}}
@@ -98,16 +101,19 @@ gh pr view {{PR_NUMBER}} --comments
 ### Related Issues
 
 #### Issue #{{NUMBER}}: {{TITLE}}
+
 - **Status:** Open/Closed
 - **Context:** What this issue tells us about the problem
 - **Solution Notes:** If closed, what was the solution
 
 ### Review Patterns Observed
+
 - Common feedback themes in related PRs
 - Testing expectations
 - Documentation requirements
 
 ### Recommendations
+
 - Lessons to apply to current implementation
 - Potential reviewers based on related PRs
 - Things to avoid based on review feedback

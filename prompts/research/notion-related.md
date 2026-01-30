@@ -23,6 +23,7 @@ Keywords: {{KEYWORDS}}
 ### 1. Extract Linked Pages
 
 From the ticket, identify and fetch:
+
 - Related tasks (linked in properties)
 - Parent pages
 - Referenced pages in the content
@@ -58,6 +59,7 @@ Extract implementation notes and learnings
 ## Notion Related Pages Report
 
 ### Summary
+
 - X linked pages found
 - X related tasks discovered
 - Key context extracted: {{SUMMARY}}
@@ -65,6 +67,7 @@ Extract implementation notes and learnings
 ### Linked Pages
 
 #### {{PAGE_TITLE}}
+
 - **URL:** {{URL}}
 - **Type:** Task/Doc/Spec
 - **Relevance:** Why this is relevant
@@ -75,6 +78,7 @@ Extract implementation notes and learnings
 ### Related Tasks
 
 #### {{TASK_TITLE}}
+
 - **Status:** {{STATUS}}
 - **Assignee:** {{ASSIGNEE}}
 - **Relevance:** How this relates to current ticket
@@ -83,12 +87,15 @@ Extract implementation notes and learnings
 ### Context from Related Pages
 
 #### Design Decisions
+
 - Any design decisions that affect this ticket
 
 #### Previous Discussions
+
 - Relevant discussions found in Notion
 
 #### Acceptance Criteria from Similar Tasks
+
 - Patterns in how acceptance criteria are structured
 
 ### Recommendations
@@ -108,6 +115,7 @@ Extract implementation notes and learnings
 ## Fallback (If MCP Not Available)
 
 If Notion MCP is not connected, ask the human to:
+
 1. Copy relevant content from linked pages
 2. Share any related tasks they know about
 3. Provide context about previous similar work

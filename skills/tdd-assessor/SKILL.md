@@ -17,6 +17,7 @@ Evaluates Test-Driven Development fit for an implementation plan and sets up the
 ### 1. Load Context
 
 Read `plan.md` from the current ticket's run directory and identify:
+
 - What's being built
 - Complexity level
 - Type of change (feature, bug fix, refactor, config)
@@ -25,18 +26,19 @@ Read `plan.md` from the current ticket's run directory and identify:
 
 Score these factors:
 
-| Factor | Score |
-|--------|-------|
-| Clear specifications? | +1 |
-| New feature or bug fix? | +1 |
-| Complex logic? | +1 |
-| Has acceptance criteria? | +1 |
-| Pure functions involved? | +1 |
-| Exploratory/uncertain scope? | -1 |
-| Heavy UI without clear assertions? | -1 |
-| Simple config/typo fix? | -2 |
+| Factor                             | Score |
+| ---------------------------------- | ----- |
+| Clear specifications?              | +1    |
+| New feature or bug fix?            | +1    |
+| Complex logic?                     | +1    |
+| Has acceptance criteria?           | +1    |
+| Pure functions involved?           | +1    |
+| Exploratory/uncertain scope?       | -1    |
+| Heavy UI without clear assertions? | -1    |
+| Simple config/typo fix?            | -2    |
 
 **TDD Score interpretation:**
+
 - 3-5: Strongly recommend TDD
 - 1-2: TDD optional, suggest hybrid
 - 0 or below: Skip TDD, write tests after
@@ -55,6 +57,7 @@ cat docs/testing/unit-testing.md 2>/dev/null || echo "No unit testing docs found
 ```
 
 Identify:
+
 - Test file location patterns (colocated: `*.test.ts` next to source)
 - Mocking approaches used
 - Setup helpers and fixtures
@@ -67,12 +70,14 @@ If TDD recommended, produce this structure:
 # TDD Approach for {Ticket}
 
 ## Assessment
+
 - TDD Score: {X}/5
 - Recommendation: TDD / Hybrid / Write tests after
 
 ## Testing Strategy
 
 ### Unit Tests
+
 - **Location:** `src/{path}/*.test.ts` (colocated)
 - **Framework:** Vitest
 - **Pattern:** {based on research}
@@ -89,16 +94,19 @@ If TDD recommended, produce this structure:
    - Verifies: {what behavior}
 
 ### Mocking Strategy
+
 - {What to mock and how}
 - Reference: {path to similar test file}
 
 ### E2E Tests (if applicable)
+
 - **Location:** `browser_tests/{feature}.spec.ts`
 - **Scenarios:** {list}
 
 ## TDD Workflow
 
 For each feature:
+
 1. Write test in `{file}.test.ts`
 2. Run: `pnpm test:unit -- {file}.test.ts`
 3. Verify test fails (RED)
@@ -128,6 +136,7 @@ Your choice:
 ### 6. Update Plan
 
 After user decision:
+
 - Append TDD section to `plan.md`
 - Update `status.json` with `tdd_approach` field
 
@@ -142,12 +151,14 @@ After user decision:
 Check the target repository's AGENTS.md or testing documentation for project-specific patterns.
 
 ### Common Test Structure
+
 - **Unit tests:** Colocated `*.test.ts` files
 - **Component tests:** `MyComponent.test.ts` next to component file
 - **Store tests:** `src/stores/*.test.ts`
 - **E2E tests:** `tests/**/*.spec.ts` or `e2e/**/*.spec.ts`
 
 ### Common Commands
+
 ```bash
 pnpm test:unit                          # Run all unit tests
 pnpm test:unit -- src/path/file.test.ts # Run specific test
@@ -157,6 +168,7 @@ pnpm test:unit -- --watch               # Watch mode
 Check AGENTS.md or package.json for project-specific test commands.
 
 ### Testing Principles
+
 - No change detector tests
 - Behavioral coverage
 - Don't mock what you don't own
@@ -165,6 +177,7 @@ Check AGENTS.md or package.json for project-specific test commands.
 ## When TDD Doesn't Fit
 
 For these cases, recommend writing tests after:
+
 - Exploratory prototyping
 - UI tweaks with unclear final state
 - Simple config changes
